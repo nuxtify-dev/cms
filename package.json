@@ -1,0 +1,75 @@
+{
+  "name": "@nuxtify/cms",
+  "version": "0.1.0",
+  "description": "Nuxtify CMS module powered by Nuxt.",
+  "homepage": "https://nuxtify.dev",
+  "author": "Nuxtify.dev <hello@nuxtify.dev>",
+  "funding": "https://github.com/sponsors/davidstackio",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuxtify-dev/cms"
+  },
+  "bugs": {
+    "url": "https://github.com/nuxtify-dev/cms/issues"
+  },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "playground"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "dev": "npm run dev:prepare && nuxt dev playground",
+    "dev:build": "nuxt build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
+    "release:prepare": "npm run lint && npm run test && npm run prepack && changelogen --bump --noAuthors",
+    "release:publish": "npm run release:prepare && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "test:coverage": "vitest --coverage",
+    "test:nuxt": "vitest --project nuxt"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.4.6",
+    "better-sqlite3": "^12.10.0"
+  },
+  "devDependencies": {
+    "@nuxt/content": "^3.14.0",
+    "@nuxt/devtools": "^3.2.4",
+    "@nuxt/eslint": "^1.15.2",
+    "@nuxt/eslint-config": "^1.15.2",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.4.6",
+    "@nuxt/test-utils": "^4.0.3",
+    "@types/node": "latest",
+    "@vitest/coverage-v8": "^4.1.7",
+    "@vue/test-utils": "^2.4.10",
+    "changelogen": "^0.6.2",
+    "eslint": "^10.4.0",
+    "happy-dom": "^20.9.0",
+    "nuxt": "^4.4.6",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.7",
+    "vue-tsc": "^3.3.1"
+  }
+}
