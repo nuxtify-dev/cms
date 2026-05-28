@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@nuxt/kit": "^4.4.6",
+    "@nuxtify/pages": "^0.7.0",
     "better-sqlite3": "^12.10.0"
   },
   "devDependencies": {
