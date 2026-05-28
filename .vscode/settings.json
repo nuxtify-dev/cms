@@ -1,6 +1,7 @@
 {
   "eslint.useFlatConfig": true,
   "cSpell.words": [
+    "defu",
     "nuxt",
     "nuxtify",
     "Vitest"
