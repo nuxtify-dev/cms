@@ -34,6 +34,7 @@ export default defineAppConfig({
     // Navigation
     navigation: {
       primary: [
+        { text: 'About', to: '/about' },
         { text: 'Pages Features', to: '/pages-features' },
         { text: 'Config', to: '/config' },
         { text: 'Nuxtify.dev', href: 'https://nuxtify.dev', openInNew: true },
@@ -68,11 +69,11 @@ export default defineAppConfig({
           ],
         },
         {
-          title: 'Resources',
+          title: 'CMS',
           links: [
-            { text: 'Blog', to: '/blog' },
-            { text: 'Podcast', to: '/podcast' },
-            { text: 'Free Guide', to: '/guide' },
+            { text: 'Articles', to: '/articles' },
+            { text: 'Topics', to: '/topics' },
+            { text: 'Contributors', to: '/contributors' },
           ],
         },
         {

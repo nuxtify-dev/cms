@@ -2,6 +2,7 @@
   "eslint.useFlatConfig": true,
   "cSpell.words": [
     "defu",
+    "lastmod",
     "nuxt",
     "nuxtify",
     "nuxtjs",
