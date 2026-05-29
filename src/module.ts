@@ -31,6 +31,9 @@ export default defineNuxtModule<ModuleOptions>().with({
         },
       },
     },
+    '@nuxt/content': {
+      version: '>=3.14.0',
+    },
   },
   defaults: {
     content: {
