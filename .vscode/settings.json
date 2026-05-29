@@ -5,6 +5,12 @@
     "nuxt",
     "nuxtify",
     "nuxtjs",
-    "Vitest"
-  ]
+    "unslugify",
+    "vitest",
+    "vuetify"
+  ],
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  },
 }
