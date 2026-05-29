@@ -34,7 +34,7 @@ export default defineAppConfig({
     // Navigation
     navigation: {
       primary: [
-        { text: 'About', to: '/about' },
+        { text: 'CMS Features', to: '/cms-features' },
         { text: 'Pages Features', to: '/pages-features' },
         { text: 'Config', to: '/config' },
         { text: 'Nuxtify.dev', href: 'https://nuxtify.dev', openInNew: true },
