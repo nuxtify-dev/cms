@@ -5,4 +5,7 @@ export default defineNuxtConfig({
   nuxtifyCms: {
     verboseLogs: true,
   },
+  ogImage: {
+    enabled: false,
+  },
 })

@@ -23,6 +23,14 @@ export default defineNuxtModule<ModuleOptions>().with({
     '@nuxtify/pages': {
       version: '>=0.7.0',
     },
+    '@nuxtjs/seo': {
+      version: '>=5.1.3',
+      defaults: {
+        ogImage: {
+          enabled: false,
+        },
+      },
+    },
   },
   defaults: {
     content: {
