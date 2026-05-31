@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import type { VCard } from 'vuetify/components'
 import type { PageLink } from '../../../types/link'
+import {
+  useSlots,
+  useAlignment,
+  toRef,
+  computed,
+} from '#imports'
 
 const props = withDefaults(defineProps<{
   title?: string
