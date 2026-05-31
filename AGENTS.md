@@ -25,13 +25,12 @@ This document provides developer instructions, architectural details, workspace 
 nuxtify-cms\
 ├── src/                          # Core module source code
 │   ├── module.ts                 # Main module definition (entry point)
-│   ├── types.ts                  # Module option types
 │   ├── runtime/                  # Assets compiled & loaded in consuming apps
 │   │   ├── components/           # Auto-registered Nuxt components (e.g. PageHero, ArticleCard, AuthorByline)
 │   │   ├── composables/          # Auto-registered composables (e.g. usePublicCollection)
 │   │   ├── pages/                # Prepended pages/routes (articles, topics, contributors, slugs)
 │   │   └── utils/                # Schema definitions (Zod/Content) & SEO helpers
-│   └── types/                    # Core typescript declarations (content, link, etc.)
+│   └── types/                    # Core typescript declarations (module, content, link, etc.)
 ├── playground/                   # Local sandbox Nuxt application for manual testing and dev
 │   ├── content.config.ts         # Nuxt Content v3 collections mapping to runtime schemas
 │   ├── nuxt.config.ts            # Local configuration importing the module locally

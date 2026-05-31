@@ -9,7 +9,7 @@ import { defu } from 'defu'
 import { name, version } from '../package.json'
 
 // Types
-import type { ModuleOptions } from './types'
+import type { ModuleOptions } from './types/types'
 
 export default defineNuxtModule<ModuleOptions>().with({
   meta: {
