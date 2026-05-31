@@ -1,3 +1,4 @@
+import type { PageCollectionItemBase } from '@nuxt/content'
 import type { z } from 'zod'
 import type {
   imageSchema,
@@ -7,12 +8,6 @@ import type {
   topicSchema,
 } from '../runtime/utils/contentSchemas'
 
-export interface NuxtContent {
-  path: string
-  title: string
-  description?: string
-}
-
 export type Image = z.infer<typeof imageSchema>
 
 type FixSitemap<T> = Omit<T, 'sitemap'> & {
@@ -20,11 +15,28 @@ type FixSitemap<T> = Omit<T, 'sitemap'> & {
   sitemap?: any
 }
 
-export type Page = Omit<FixSitemap<z.infer<typeof pageSchema>>, 'draft'> & { draft?: boolean } & NuxtContent
+export interface Page extends PageCollectionItemBase, Omit<FixSitemap<z.infer<typeof pageSchema>>, 'draft'> {
+  draft?: boolean
+}
 
-export type Contributor = Omit<FixSitemap<z.infer<typeof contributorSchema>>, 'draft'> & { draft?: boolean } & NuxtContent
+export interface Contributor extends PageCollectionItemBase, Omit<FixSitemap<z.infer<typeof contributorSchema>>, 'draft'> {
+  draft?: boolean
+}
 export type ContributorSocials = NonNullable<Contributor['socials']>
 
-export type Article = Omit<FixSitemap<z.infer<typeof articleSchema>>, 'draft'> & { draft?: boolean } & NuxtContent
+export interface Article extends PageCollectionItemBase, Omit<FixSitemap<z.infer<typeof articleSchema>>, 'draft'> {
+  draft?: boolean
+}
 
-export type Topic = Omit<FixSitemap<z.infer<typeof topicSchema>>, 'draft'> & { draft?: boolean } & NuxtContent
+export interface Topic extends PageCollectionItemBase, Omit<FixSitemap<z.infer<typeof topicSchema>>, 'draft'> {
+  draft?: boolean
+}
+
+declare module '@nuxt/content' {
+  interface Collections {
+    pages: Page
+    contributors: Contributor
+    articles: Article
+    topics: Topic
+  }
+}
