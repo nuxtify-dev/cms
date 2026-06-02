@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.1
+
+[compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.0...v0.1.1)
+
+### 🩹 Fixes
+
+- Index page 404 if no template defined ([70620e2](https://github.com/nuxtify-dev/cms/commit/70620e2))
+
+### 🏡 Chore
+
+- **dx:** Make npm run test only run once ([b43dc87](https://github.com/nuxtify-dev/cms/commit/b43dc87))
+
 ## [0.1.0] - 2026-06-01
 
 - chore: install and configure Nuxt
