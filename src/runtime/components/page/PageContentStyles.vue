@@ -6,13 +6,27 @@
 
 <style scoped>
 /* Links */
-:deep(p a), :deep(li a), :deep(td a), :deep(th a) {
+:deep(h1 a),
+:deep(h2 a),
+:deep(h3 a),
+:deep(h4 a),
+:deep(p a),
+:deep(li a),
+:deep(td a),
+:deep(th a) {
   color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity));
   text-decoration: underline;
   text-decoration-color: rgb(var(--v-theme-secondary));
   text-underline-offset: 4px;
 }
-:deep(p a:hover), :deep(li a:hover), :deep(td a:hover), :deep(th a:hover) {
+:deep(h1 a:hover),
+:deep(h2 a:hover),
+:deep(h3 a:hover),
+:deep(h4 a:hover),
+:deep(p a:hover),
+:deep(li a:hover),
+:deep(td a:hover),
+:deep(th a:hover) {
   color: rgb(var(--v-theme-secondary));
   text-decoration: none;
 }
