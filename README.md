@@ -2,7 +2,7 @@
   <img src="./nuxtify-banner.png"/>
 </div>
 
-# My Module
+# Nuxtify CMS
 
 <!-- [![npm downloads][npm-downloads-src]][npm-downloads-href] -->
 
