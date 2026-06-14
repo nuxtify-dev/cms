@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.1.2
+
+[compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.1...v0.1.2)
+
+- ui: style heading links in content
+
+### 📖 Documentation
+
+- Update readme title ([44d59ea](https://github.com/nuxtify-dev/cms/commit/44d59ea))
+
 ## v0.1.1
 
 [compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.0...v0.1.1)
