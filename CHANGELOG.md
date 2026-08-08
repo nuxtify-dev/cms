@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.3
+
+[compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.2...v0.1.3)
+
+### ⚠️ Breaking Changes
+
+- [v0.8.0](https://github.com/nuxtify-dev/core/releases/tag/v0.8.0) and [v0.9.0](https://github.com/nuxtify-dev/core/releases/tag/v0.9.0) of `@nuxtify/core` had breaking changes.
+
+### 🏡 Chore
+
+- Update `@nuxtify/core` and `@nuxtify/pages` packages
+
 ## v0.1.2
 
 [compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.1...v0.1.2)

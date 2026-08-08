@@ -1,6 +1,6 @@
 {
   "name": "@nuxtify/cms",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Nuxtify CMS module powered by Nuxt.",
   "homepage": "https://nuxtify.dev",
   "author": "Nuxtify.dev <hello@nuxtify.dev>",
