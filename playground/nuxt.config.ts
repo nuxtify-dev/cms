@@ -7,6 +7,14 @@ export default defineNuxtConfig({
     },
   },
   compatibilityDate: '2026-05-28',
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+      ],
+    },
+  },
   nuxtifyCms: {
     verboseLogs: true,
   },
