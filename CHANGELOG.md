@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.1.4
+
+[compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.3...v0.1.4)
+
+### 🏡 Chore
+
+- Update `@nuxtify/core` and `@nuxtify/pages` packages
+- Update Nuxt content and better-sqlite3
+
+### 📖 Documentation
+
+- Simplify readme module section ([d8a26a9](https://github.com/nuxtify-dev/cms/commit/d8a26a9))
+
 ## v0.1.3
 
 [compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.2...v0.1.3)
