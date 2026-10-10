@@ -13,6 +13,7 @@ import {
   defineArticle,
   defineBreadcrumb,
   unslugify,
+  useReadingTime,
   useSiteConfig,
 } from '#imports'
 
@@ -28,6 +29,7 @@ const { data: author } = await useAsyncData(`article-author-${article.value.auth
   return usePublicCollection('contributors').path(`/contributors/${article.value?.author}`).first()
 })
 
+const readTime = useReadingTime(article)
 const breadcrumbs = ref<BreadcrumbItem[]>([
   {
     title: 'Articles',
@@ -97,6 +99,7 @@ useSchemaOrg(article.value.schemaOrg || [
           v-if="article.updatedAt || article.publishedAt"
           :timestamp="article.updatedAt || article.publishedAt"
           :updated="!!article.updatedAt"
+          :read-time="readTime"
           :class="{ 'ms-auto': !author }"
         />
       </div>

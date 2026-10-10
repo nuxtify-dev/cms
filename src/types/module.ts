@@ -9,6 +9,10 @@ export interface CmsModuleOptions {
       title?: string
       subtitle?: string
       description?: string
+      readTime?: {
+        enabled?: boolean
+        wordsPerMinute?: number
+      }
     }
     topics?: {
       title?: string

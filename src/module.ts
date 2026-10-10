@@ -47,6 +47,11 @@ export default defineNuxtModule<ModuleOptions>().with({
         title: 'Articles',
         subtitle: 'Long, in-depth posts.',
         description: '',
+        readTime: {
+          enabled: true,
+          // Same as Ghost: https://docs.ghost.org/themes/helpers/utility/reading_time
+          wordsPerMinute: 275,
+        },
       },
       topics: {
         title: 'Topics',

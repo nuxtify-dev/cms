@@ -54,6 +54,7 @@ export const articleSchema = z.object({
   image: imageSchema.optional(),
   draft: z.boolean().default(false),
   topics: z.array(z.string()).default([]).optional(),
+  readTime: z.union([z.number(), z.string()]).optional(),
 }).merge(seoSchema)
 
 export const topicSchema = z.object({
