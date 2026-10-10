@@ -9,7 +9,7 @@ defineProps<{
 <template>
   <v-row
     justify="center"
-    class="pt-4 pt-md-10"
+    class="pt-4 pt-md-10 mb-2"
   >
     <v-col
       cols="12"

@@ -42,10 +42,10 @@ useSchemaOrg([
 
     <PageBody>
       <ArticleCard
-        v-for="article in articles"
+        v-for="(article, index) in articles"
         :key="article.path"
         :article
-        class="mt-12"
+        :class="{ 'mt-12': index > 0 }"
       />
     </PageBody>
   </PageContainer>
