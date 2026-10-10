@@ -13,6 +13,7 @@ export interface CmsModuleOptions {
    */
   content?: {
     articles?: {
+      routePrefix?: string
       title?: string
       subtitle?: string
       description?: string
@@ -22,16 +23,19 @@ export interface CmsModuleOptions {
       }
     }
     notes?: {
+      routePrefix?: string
       title?: string
       subtitle?: string
       description?: string
     }
     topics?: {
+      routePrefix?: string
       title?: string
       subtitle?: string
       description?: string
     }
     contributors?: {
+      routePrefix?: string
       title?: string
       subtitle?: string
       description?: string

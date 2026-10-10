@@ -8,9 +8,12 @@ import {
   titleCase,
   defineWebPage,
   useAsyncData,
+  getContentItemLink,
+  normalizePrefix,
 } from '#imports'
 
 const appConfig = useAppConfig()
+const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
 const { data: contributors } = await useAsyncData('contributors', () => {
   return usePublicCollection('contributors').all()
 })
@@ -43,7 +46,7 @@ useSchemaOrg([
         <PageCard
           v-for="contributor in contributors"
           :key="contributor.path"
-          :link="{ to: contributor.path }"
+          :link="{ to: getContentItemLink(contributorsPrefix, contributor) }"
           :title="contributor.name"
           :description="contributor.jobTitle"
           variant="flat"

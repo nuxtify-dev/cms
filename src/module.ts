@@ -7,6 +7,7 @@ import {
 } from '@nuxt/kit'
 import { defu } from 'defu'
 import { name, version } from '../package.json'
+import { normalizePrefix } from './runtime/utils/routes'
 
 // Types
 import type { ModuleOptions } from './types/module'
@@ -47,6 +48,7 @@ export default defineNuxtModule<ModuleOptions>().with({
     },
     content: {
       articles: {
+        routePrefix: '/articles',
         title: 'Articles',
         subtitle: 'Long, in-depth posts.',
         description: '',
@@ -57,16 +59,19 @@ export default defineNuxtModule<ModuleOptions>().with({
         },
       },
       notes: {
+        routePrefix: '/notes',
         title: 'Notes',
         subtitle: 'Short updates, thoughts, and links.',
         description: '',
       },
       topics: {
+        routePrefix: '/topics',
         title: 'Topics',
         subtitle: 'Explore posts by category.',
         description: '',
       },
       contributors: {
+        routePrefix: '/contributors',
         title: 'Contributors',
         subtitle: 'The wonderful humans who make this website possible.',
         description: '',
@@ -76,9 +81,33 @@ export default defineNuxtModule<ModuleOptions>().with({
   setup(_options, _nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
-    // Expose module options to app config
+    const articlesPrefix = normalizePrefix(_options.content?.articles?.routePrefix, '/articles')
+    const notesPrefix = normalizePrefix(_options.content?.notes?.routePrefix, '/notes')
+    const topicsPrefix = normalizePrefix(_options.content?.topics?.routePrefix, '/topics')
+    const contributorsPrefix = normalizePrefix(_options.content?.contributors?.routePrefix, '/contributors')
+
+    // Expose module options to app config with normalized route prefixes
     _nuxt.options.appConfig.nuxtify = defu(_nuxt.options.appConfig.nuxtify || {}, {
       ..._options,
+      content: {
+        ..._options.content,
+        articles: {
+          ..._options.content?.articles,
+          routePrefix: articlesPrefix,
+        },
+        notes: {
+          ..._options.content?.notes,
+          routePrefix: notesPrefix,
+        },
+        topics: {
+          ..._options.content?.topics,
+          routePrefix: topicsPrefix,
+        },
+        contributors: {
+          ..._options.content?.contributors,
+          routePrefix: contributorsPrefix,
+        },
+      },
     })
 
     // Components
@@ -101,22 +130,22 @@ export default defineNuxtModule<ModuleOptions>().with({
       })
       pages.unshift({
         name: 'articles',
-        path: '/articles',
+        path: articlesPrefix,
         file: resolve('./runtime/pages/articles/index.vue'),
       })
       pages.unshift({
         name: 'articles-slug',
-        path: '/articles/:slug',
+        path: `${articlesPrefix}/:slug`,
         file: resolve('./runtime/pages/articles/[slug].vue'),
       })
       pages.unshift({
         name: 'notes',
-        path: '/notes',
+        path: notesPrefix,
         file: resolve('./runtime/pages/notes/index.vue'),
       })
       pages.unshift({
         name: 'notes-slug',
-        path: '/notes/:slug',
+        path: `${notesPrefix}/:slug`,
         file: resolve('./runtime/pages/notes/[slug].vue'),
       })
       pages.unshift({
@@ -126,22 +155,22 @@ export default defineNuxtModule<ModuleOptions>().with({
       })
       pages.unshift({
         name: 'topics',
-        path: '/topics',
+        path: topicsPrefix,
         file: resolve('./runtime/pages/topics/index.vue'),
       })
       pages.unshift({
         name: 'topics-slug',
-        path: '/topics/:slug',
+        path: `${topicsPrefix}/:slug`,
         file: resolve('./runtime/pages/topics/[slug].vue'),
       })
       pages.unshift({
         name: 'contributors',
-        path: '/contributors',
+        path: contributorsPrefix,
         file: resolve('./runtime/pages/contributors/index.vue'),
       })
       pages.unshift({
         name: 'contributors-slug',
-        path: '/contributors/:slug',
+        path: `${contributorsPrefix}/:slug`,
         file: resolve('./runtime/pages/contributors/[slug].vue'),
       })
     })

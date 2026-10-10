@@ -14,13 +14,24 @@ import {
   defineBreadcrumb,
   useSiteConfig,
   useContributor,
+  useAppConfig,
+  normalizePrefix,
 } from '#imports'
 
+const appConfig = useAppConfig()
 const route = useRoute()
+const slug = route.params.slug as string
+const notesPrefix = normalizePrefix(appConfig.nuxtify?.content?.notes?.routePrefix, '/notes')
+const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
 
 // Fetch note
-const { data: note } = await useAsyncData(`note-${route.path}`, () => {
-  return usePublicCollection('notes').path(route.path).first()
+const { data: note } = await useAsyncData(`note-${route.path}`, async () => {
+  const direct = await usePublicCollection('notes').path(route.path).first()
+  if (direct) return direct
+
+  return await usePublicCollection('notes')
+    .where('stem', 'LIKE', `%/${slug}`)
+    .first()
 })
 
 if (!note.value) {
@@ -37,9 +48,9 @@ const { data: author } = await useContributor(note.value.author)
 // Breadcrumbs
 const breadcrumbs = ref<BreadcrumbItem[]>([
   {
-    title: 'Notes',
+    title: appConfig.nuxtify?.content?.notes?.title || 'Notes',
     disabled: false,
-    to: '/notes',
+    to: notesPrefix,
   },
 ])
 
@@ -64,7 +75,7 @@ useSchemaOrg(note.value.schemaOrg || [
           {
             '@type': 'Person',
             'name': author.value.name,
-            'url': `${siteConfig.url}/contributors/${note.value.author}`,
+            'url': `${siteConfig.url}${contributorsPrefix}/${note.value.author}`,
             'jobTitle': author.value.jobTitle ?? '',
             'honorificSuffix': author.value.honorificSuffix ?? '',
           },

@@ -12,13 +12,22 @@ import {
   definePerson,
   slugify,
   useSiteConfig,
+  useAppConfig,
+  normalizePrefix,
 } from '#imports'
 
+const appConfig = useAppConfig()
+const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
 const route = useRoute()
 const slug = route.params.slug as string
 
-const { data: contributor } = await useAsyncData(`contributor-${route.path}`, () => {
-  return usePublicCollection('contributors').path(route.path).first()
+const { data: contributor } = await useAsyncData(`contributor-${route.path}`, async () => {
+  const direct = await usePublicCollection('contributors').path(route.path).first()
+  if (direct) return direct
+
+  return await usePublicCollection('contributors')
+    .where('stem', 'LIKE', `%/${slug}`)
+    .first()
 })
 
 if (!contributor.value) {
@@ -54,7 +63,7 @@ useSchemaOrg(contributor.value.schemaOrg || [
       ),
       description: contributor.value.description,
       image: contributor.value.image?.src ?? '',
-      url: `${useSiteConfig().url}/contributors/${
+      url: `${useSiteConfig().url}${contributorsPrefix}/${
         slugify(contributor.value.name)
       }`,
       jobTitle: contributor.value.jobTitle ?? '',

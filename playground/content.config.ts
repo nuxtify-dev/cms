@@ -26,7 +26,7 @@ export default defineContentConfig({
     // Articles
     articles: defineCollection({
       type: 'page',
-      source: 'articles/*.md',
+      source: 'posts/*.md',
       schema: articleSchema,
     }),
 

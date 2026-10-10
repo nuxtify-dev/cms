@@ -8,9 +8,12 @@ import {
   titleCase,
   defineWebPage,
   useAsyncData,
+  getContentItemLink,
+  normalizePrefix,
 } from '#imports'
 
 const appConfig = useAppConfig()
+const topicsPrefix = normalizePrefix(appConfig.nuxtify?.content?.topics?.routePrefix, '/topics')
 const { data: topics } = await useAsyncData('topics', () => {
   return usePublicCollection('topics').all()
 })
@@ -43,7 +46,7 @@ useSchemaOrg([
         <PageCard
           v-for="topic in topics"
           :key="topic.path"
-          :link="{ to: topic.path }"
+          :link="{ to: getContentItemLink(topicsPrefix, topic) }"
           :title="topic.title"
           :description="topic.description"
         />

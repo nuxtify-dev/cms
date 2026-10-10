@@ -250,7 +250,7 @@ export default defineContentConfig({
                   size="small"
                   color="secondary"
                   variant="text"
-                  to="/articles"
+                  to="/posts"
                   append-icon="mdi-arrow-right"
                   class="text-none"
                 >

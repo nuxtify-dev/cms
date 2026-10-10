@@ -12,8 +12,13 @@ import {
 const route = useRoute()
 const slug = route.params.slug as string
 
-const { data: topic } = await useAsyncData(`topic-${route.path}`, () => {
-  return usePublicCollection('topics').path(route.path).first()
+const { data: topic } = await useAsyncData(`topic-${route.path}`, async () => {
+  const direct = await usePublicCollection('topics').path(route.path).first()
+  if (direct) return direct
+
+  return await usePublicCollection('topics')
+    .where('stem', 'LIKE', `%/${slug}`)
+    .first()
 })
 if (!topic.value) {
   throw createError({ status: 404, statusText: 'Topic not found', fatal: import.meta.client })

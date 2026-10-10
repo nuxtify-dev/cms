@@ -5,6 +5,9 @@ import {
   computed,
   useContributor,
   unslugify,
+  useAppConfig,
+  getContentItemLink,
+  normalizePrefix,
 } from '#imports'
 
 // PROPS
@@ -12,13 +15,17 @@ const props = defineProps<{
   article: Article
 }>()
 
-// ROUTE
+// ROUTE & CONFIG
 const route = useRoute()
+const appConfig = useAppConfig()
+const articlesPrefix = normalizePrefix(appConfig.nuxtify?.content?.articles?.routePrefix, '/articles')
+const topicsPrefix = normalizePrefix(appConfig.nuxtify?.content?.topics?.routePrefix, '/topics')
 
 const { data: author } = await useContributor(props.article.author)
 
 // STATE - LOCAL
 const primaryTopic = computed(() => props.article.topics?.[0] ?? '')
+const articleLink = computed(() => getContentItemLink(articlesPrefix, props.article))
 </script>
 
 <template>
@@ -32,7 +39,7 @@ const primaryTopic = computed(() => props.article.topics?.[0] ?? '')
       class="text-overline"
     >
       <NuxtLink
-        :to="`/topics/${primaryTopic}`"
+        :to="`${topicsPrefix}/${primaryTopic}`"
         class="nf-article-primary-topic"
       >
         {{ unslugify(primaryTopic) }}
@@ -41,7 +48,7 @@ const primaryTopic = computed(() => props.article.topics?.[0] ?? '')
 
     <!-- Title -->
     <h2 class="text-h5 text-secondary font-weight-bold">
-      <NuxtLink :to="`${article.path}`">
+      <NuxtLink :to="articleLink">
         {{ article.title }}
       </NuxtLink>
     </h2>

@@ -74,7 +74,7 @@ export default defineAppConfig({
         {
           title: 'CMS',
           links: [
-            { text: 'Articles', to: '/articles' },
+            { text: 'Articles', to: '/posts' },
             { text: 'Notes', to: '/notes' },
             { text: 'Topics', to: '/topics' },
             { text: 'Contributors', to: '/contributors' },

@@ -8,6 +8,8 @@ import {
   useContributor,
   slugify,
   titleCase,
+  getContentItemLink,
+  normalizePrefix,
 } from '#imports'
 
 // PROPS
@@ -15,15 +17,17 @@ const props = defineProps<{
   note: Note
 }>()
 
-// PAGE INFO
-const route = useRoute()
-const isPermalink = computed(
-  () => props.note.path === route.path,
-)
-
 // STATE - GLOBAL
 const siteConfig = useSiteConfig()
 const appConfig = useAppConfig()
+const notesPrefix = normalizePrefix(appConfig.nuxtify?.content?.notes?.routePrefix, '/notes')
+const noteLink = computed(() => getContentItemLink(notesPrefix, props.note))
+
+// PAGE INFO
+const route = useRoute()
+const isPermalink = computed(
+  () => noteLink.value === route.path || props.note.path === route.path,
+)
 
 // Fetch author contributor
 const { data: author } = await useContributor(props.note.author)
@@ -52,7 +56,7 @@ const publishedDate = computed(() => {
       <!-- Published Date -->
       <NuxtLink
         v-if="!isPermalink"
-        :to="note.path"
+        :to="noteLink"
       >
         {{ publishedDate }}
       </NuxtLink>
@@ -77,7 +81,7 @@ const publishedDate = computed(() => {
           v-else
           class="text-h5"
         >
-          <NuxtLink :to="note.path">
+          <NuxtLink :to="noteLink">
             {{ note.title }}
           </NuxtLink>
         </h2>
@@ -123,7 +127,7 @@ const publishedDate = computed(() => {
       <!-- Reply -->
       <v-btn
         v-if="appConfig.nuxtify?.email?.reply"
-        :href="`mailto:${appConfig.nuxtify.email.reply}?subject=[REPLY] Thoughts on ${note.title}&body=%0A%0A${siteConfig.url}${note.path}`"
+        :href="`mailto:${appConfig.nuxtify.email.reply}?subject=[REPLY] Thoughts on ${note.title}&body=%0A%0A${siteConfig.url}${noteLink}`"
         prepend-icon="mdi-reply"
         color="primary"
       >
@@ -132,7 +136,7 @@ const publishedDate = computed(() => {
 
       <!-- Share -->
       <NoteShareButton
-        :path="note.path"
+        :path="noteLink"
         :title="note.title ?? ''"
         text="Check out this post:"
       />

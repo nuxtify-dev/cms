@@ -16,11 +16,25 @@ import {
   useReadingTime,
   useSiteConfig,
   useContributor,
+  useAppConfig,
+  normalizePrefix,
 } from '#imports'
 
+const appConfig = useAppConfig()
 const route = useRoute()
-const { data: article } = await useAsyncData(`article-${route.path}`, () => {
-  return usePublicCollection('articles').path(route.path).first()
+const slug = route.params.slug as string
+
+const articlesPrefix = normalizePrefix(appConfig.nuxtify?.content?.articles?.routePrefix, '/articles')
+const topicsPrefix = normalizePrefix(appConfig.nuxtify?.content?.topics?.routePrefix, '/topics')
+const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
+
+const { data: article } = await useAsyncData(`article-${route.path}`, async () => {
+  const direct = await usePublicCollection('articles').path(route.path).first()
+  if (direct) return direct
+
+  return await usePublicCollection('articles')
+    .where('stem', 'LIKE', `%/${slug}`)
+    .first()
 })
 if (!article.value) {
   throw createError({ status: 404, statusText: 'Article not found', fatal: import.meta.client })
@@ -31,15 +45,15 @@ const { data: author } = await useContributor(article.value.author)
 const readTime = useReadingTime(article)
 const breadcrumbs = ref<BreadcrumbItem[]>([
   {
-    title: 'Articles',
-    to: '/articles',
+    title: appConfig.nuxtify?.content?.articles?.title || 'Articles',
+    to: articlesPrefix,
   },
 ])
 
 if (article.value.topics?.length && article.value.topics[0]) {
   breadcrumbs.value.push({
     title: unslugify(article.value.topics[0]),
-    to: `/topics/${article.value.topics[0]}`,
+    to: `${topicsPrefix}/${article.value.topics[0]}`,
     disabled: false,
   })
 }
@@ -62,7 +76,7 @@ useSchemaOrg(article.value.schemaOrg || [
           {
             '@type': 'Person',
             'name': author.value.name ?? '',
-            'url': `${useSiteConfig().url}/contributors/${article.value.author}`,
+            'url': `${useSiteConfig().url}${contributorsPrefix}/${article.value.author}`,
             'jobTitle': author.value.jobTitle ?? '',
             'honorificSuffix': author.value.honorificSuffix ?? '',
           },

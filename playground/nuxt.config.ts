@@ -23,6 +23,11 @@ export default defineNuxtConfig({
   },
   nuxtifyCms: {
     verboseLogs: true,
+    content: {
+      articles: {
+        routePrefix: 'posts',
+      },
+    },
   },
   ogImage: {
     enabled: false,

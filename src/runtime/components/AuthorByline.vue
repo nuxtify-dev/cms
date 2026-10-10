@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import type { Contributor } from '../../types/content'
-import { honoraryName } from '#imports'
+import {
+  honoraryName,
+  useAppConfig,
+  computed,
+  getContentItemLink,
+  normalizePrefix,
+} from '#imports'
 
-defineProps<{
+const props = defineProps<{
   author: Contributor
 }>()
+
+const appConfig = useAppConfig()
+const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
+const authorLink = computed(() => getContentItemLink(contributorsPrefix, props.author))
 </script>
 
 <template>
   <div>
-    <NuxtLink :to="author.path">
+    <NuxtLink :to="authorLink">
       <div class="d-flex align-center ga-3">
         <!-- Avatar -->
         <NuxtImg
