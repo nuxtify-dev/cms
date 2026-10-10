@@ -84,13 +84,22 @@ useSchemaOrg(article.value.schemaOrg || [
         <PageBreadcrumbs :breadcrumbs />
       </template>
 
-      <AuthorByline
-        v-if="author"
-        :author
-        :timestamp="article.updatedAt || article.publishedAt"
-        :updated="!!article.updatedAt"
-        class="mt-2"
-      />
+      <div
+        v-if="author || article.publishedAt || article.updatedAt"
+        class="d-flex justify-space-between align-center mt-4"
+      >
+        <AuthorByline
+          v-if="author"
+          :author
+        />
+
+        <ArticleDate
+          v-if="article.updatedAt || article.publishedAt"
+          :timestamp="article.updatedAt || article.publishedAt"
+          :updated="!!article.updatedAt"
+          :class="{ 'ms-auto': !author }"
+        />
+      </div>
     </ArticleTitle>
 
     <PageBody>

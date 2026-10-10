@@ -4,58 +4,47 @@ import { honoraryName } from '#imports'
 
 defineProps<{
   author: Contributor
-  timestamp: string | Date
-  updated?: boolean
-  hideTimestampText?: boolean
 }>()
 </script>
 
 <template>
-  <div class="text-body-2 text-medium-emphasis d-flex align-center ga-2">
-    <!-- Avatar -->
-    <NuxtImg
-      v-if="author.image"
-      :src="author.image.src"
-      :alt="author.image.alt"
-      width="32"
-      height="32"
-      format="webp"
-      densities="x1 x2"
-      class="rounded-circle"
-    />
-
-    <!-- Author -->
-    <span>
-      by
-      <NuxtLink :to="author.path">
-        {{ honoraryName(author.name, author.honorificSuffix) }}
-      </NuxtLink>
-    </span>
-
-    ·
-
-    <!-- Date -->
-    <span>
-      {{ hideTimestampText ? '' : (updated ? 'Updated' : 'Published') }}
-      <NuxtTime
-        :datetime="timestamp"
-        year="numeric"
-        month="short"
-        day="numeric"
+  <NuxtLink :to="author.path">
+    <div class="d-flex align-center ga-3">
+      <!-- Avatar -->
+      <NuxtImg
+        v-if="author.image"
+        :src="author.image.src"
+        :alt="author.image.alt"
+        width="36"
+        height="36"
+        format="webp"
+        densities="x1 x2"
+        class="rounded-circle"
       />
-    </span>
-  </div>
+
+      <!-- Author details -->
+      <div class="d-flex flex-column text-body-2">
+        <span class="font-weight-bold">
+          {{ honoraryName(author.name, author.honorificSuffix) }}
+        </span>
+
+        <span
+          v-if="author.jobTitle"
+          class="text-medium-emphasis"
+        >
+          {{ author.jobTitle }}
+        </span>
+      </div>
+    </div>
+  </NuxtLink>
 </template>
 
 <style scoped>
 a {
   color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity));
-  text-decoration: underline;
-  text-decoration-color: rgb(var(--v-theme-secondary));
-  text-underline-offset: 4px;
+  text-decoration: none;
 }
 a:hover {
   color: rgb(var(--v-theme-secondary));
-  text-decoration: none;
 }
 </style>

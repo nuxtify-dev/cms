@@ -57,14 +57,23 @@ const primaryTopic = computed(() => props.article.topics?.[0] ?? '')
       {{ article.summary }}
     </div>
 
-    <!-- Author Byline -->
-    <AuthorByline
-      v-if="author"
-      :author
-      :timestamp="article.publishedAt ?? ''"
-      hide-timestamp-text
-      class="mt-2"
-    />
+    <!-- Author Byline & Date -->
+    <div
+      v-if="author || article.publishedAt"
+      class="d-flex justify-space-between align-center mt-2"
+    >
+      <AuthorByline
+        v-if="author"
+        :author
+      />
+
+      <ArticleDate
+        v-if="article.publishedAt"
+        :timestamp="article.publishedAt"
+        hide-timestamp-text
+        :class="{ 'ms-auto': !author }"
+      />
+    </div>
   </article>
 </template>
 
