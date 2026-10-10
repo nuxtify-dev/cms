@@ -8,35 +8,37 @@ defineProps<{
 </script>
 
 <template>
-  <NuxtLink :to="author.path">
-    <div class="d-flex align-center ga-3">
-      <!-- Avatar -->
-      <NuxtImg
-        v-if="author.image"
-        :src="author.image.src"
-        :alt="author.image.alt"
-        width="36"
-        height="36"
-        format="webp"
-        densities="x1 x2"
-        class="rounded-circle"
-      />
+  <div>
+    <NuxtLink :to="author.path">
+      <div class="d-flex align-center ga-3">
+        <!-- Avatar -->
+        <NuxtImg
+          v-if="author.image"
+          :src="author.image.src"
+          :alt="author.image.alt"
+          width="36"
+          height="36"
+          format="webp"
+          densities="x1 x2"
+          class="rounded-circle"
+        />
 
-      <!-- Author details -->
-      <div class="d-flex flex-column text-body-2">
-        <span class="font-weight-bold">
-          {{ honoraryName(author.name, author.honorificSuffix) }}
-        </span>
+        <!-- Author details -->
+        <div class="d-flex flex-column text-body-2">
+          <span class="font-weight-bold">
+            {{ honoraryName(author.name, author.honorificSuffix) }}
+          </span>
 
-        <span
-          v-if="author.jobTitle"
-          class="text-medium-emphasis"
-        >
-          {{ author.jobTitle }}
-        </span>
+          <span
+            v-if="author.jobTitle"
+            class="text-medium-emphasis"
+          >
+            {{ author.jobTitle }}
+          </span>
+        </div>
       </div>
-    </div>
-  </NuxtLink>
+    </NuxtLink>
+  </div>
 </template>
 
 <style scoped>
