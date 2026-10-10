@@ -16,6 +16,11 @@ export default defineNuxtConfig({
       ],
     },
   },
+  linkChecker: {
+    skipInspections: [
+      'link-text',
+    ],
+  },
   nuxtifyCms: {
     verboseLogs: true,
   },
