@@ -2,6 +2,13 @@ import type { ModuleOptions as PagesModuleOptions } from '@nuxtify/pages'
 
 export interface CmsModuleOptions {
   /**
+   * Email options
+   */
+  email?: {
+    reply?: string
+  }
+
+  /**
    * Content options
    */
   content?: {
@@ -13,6 +20,11 @@ export interface CmsModuleOptions {
         enabled?: boolean
         wordsPerMinute?: number
       }
+    }
+    notes?: {
+      title?: string
+      subtitle?: string
+      description?: string
     }
     topics?: {
       title?: string

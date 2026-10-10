@@ -3,11 +3,20 @@ import {
   usePublicCollection,
   useAsyncData,
   unslugify,
+  slugify,
+  titleCase,
+  computed,
 } from '#imports'
 
 // FETCH LIVE CONTENT DATA
 const { data: articles } = await useAsyncData('demo-cms-articles', () => {
   return usePublicCollection('articles')
+    .order('publishedAt', 'DESC')
+    .all()
+})
+
+const { data: notes } = await useAsyncData('demo-cms-notes', () => {
+  return usePublicCollection('notes')
     .order('publishedAt', 'DESC')
     .all()
 })
@@ -20,10 +29,27 @@ const { data: topics } = await useAsyncData('demo-cms-topics', () => {
   return usePublicCollection('topics').all()
 })
 
+// EXTRACT ACTIVE TAGS FROM NOTES
+const tags = computed(() => {
+  if (!notes.value) return []
+  const allTags = new Set<string>()
+  notes.value.forEach((note) => {
+    if (Array.isArray(note.tags)) {
+      note.tags.forEach((tag) => {
+        if (tag && typeof tag === 'string') {
+          allTags.add(tag)
+        }
+      })
+    }
+  })
+  return Array.from(allTags).sort()
+})
+
 // MOCK CODE EXAMPLES FOR DEVELOPERS
-const queryCodeExample = `// Query safe public collection (filters out drafts in production)
-const { data: articles } = await useAsyncData('articles', () => {
-  return usePublicCollection('articles')
+const queryCodeExample = `// Query safe public collections & filter by tag
+const { data: notes } = await useAsyncData('tagged-notes', () => {
+  return usePublicCollection('notes')
+    .where('tags', 'LIKE', '%"Nuxt"%')
     .order('publishedAt', 'DESC')
     .all()
 })`
@@ -36,11 +62,21 @@ export default defineContentConfig({
       source: 'articles/*.md',
       schema: articleSchema,
     }),
+    notes: defineCollection({
+      type: 'page',
+      source: 'notes/*.md',
+      schema: noteSchema,
+    }),
     contributors: defineCollection({
       type: 'page',
       source: 'contributors/*.md',
       schema: contributorSchema,
-    })
+    }),
+    topics: defineCollection({
+      type: 'page',
+      source: 'topics/*.md',
+      schema: topicSchema,
+    }),
   }
 })`
 </script>
@@ -57,7 +93,7 @@ export default defineContentConfig({
           CMS & Content Showcase
         </h1>
         <p class="text-subtitle-1 text-medium-emphasis max-width-800">
-          The <strong>@nuxtify/cms</strong> module streamlines content management in Nuxt. It bundles predefined collection schemas, responsive UI components, a high-level query composable, and auto-configured sitemaps/SEO for articles, topics, and authors.
+          The <strong>@nuxtify/cms</strong> module streamlines content management in Nuxt. It bundles predefined collection schemas, responsive UI components, a high-level query composable, and auto-configured sitemaps/SEO for articles, notes, topics, tags, and authors.
         </p>
         <v-divider class="mt-6" />
       </v-col>
@@ -67,13 +103,14 @@ export default defineContentConfig({
     <v-row class="mb-8">
       <v-col
         cols="12"
-        sm="4"
+        sm="6"
+        md="4"
       >
         <v-card
-          class="pa-6 border text-center"
+          class="pa-6 border text-center h-100"
           variant="outlined"
         >
-          <div class="text-h4 font-weight-bold text-primary mb-1">
+          <div class="text-h4 font-weight-bold text-info mb-1">
             {{ articles?.length || 0 }}
           </div>
           <div class="text-subtitle-1 font-weight-bold">
@@ -87,13 +124,35 @@ export default defineContentConfig({
 
       <v-col
         cols="12"
-        sm="4"
+        sm="6"
+        md="4"
       >
         <v-card
-          class="pa-6 border text-center"
+          class="pa-6 border text-center h-100"
           variant="outlined"
         >
-          <div class="text-h4 font-weight-bold text-secondary mb-1">
+          <div class="text-h4 font-weight-bold text-info mb-1">
+            {{ notes?.length || 0 }}
+          </div>
+          <div class="text-subtitle-1 font-weight-bold">
+            Notes & Updates
+          </div>
+          <div class="text-caption text-medium-emphasis">
+            Short markdown thoughts under <code>content/notes/</code>
+          </div>
+        </v-card>
+      </v-col>
+
+      <v-col
+        cols="12"
+        sm="6"
+        md="4"
+      >
+        <v-card
+          class="pa-6 border text-center h-100"
+          variant="outlined"
+        >
+          <div class="text-h4 font-weight-bold text-info mb-1">
             {{ topics?.length || 0 }}
           </div>
           <div class="text-subtitle-1 font-weight-bold">
@@ -107,13 +166,35 @@ export default defineContentConfig({
 
       <v-col
         cols="12"
-        sm="4"
+        sm="6"
+        md="6"
       >
         <v-card
-          class="pa-6 border text-center"
+          class="pa-6 border text-center h-100"
           variant="outlined"
         >
-          <div class="text-h4 font-weight-bold text-success mb-1">
+          <div class="text-h4 font-weight-bold text-info mb-1">
+            {{ tags?.length || 0 }}
+          </div>
+          <div class="text-subtitle-1 font-weight-bold">
+            Content Tags
+          </div>
+          <div class="text-caption text-medium-emphasis">
+            Dynamic tags tagged across notes
+          </div>
+        </v-card>
+      </v-col>
+
+      <v-col
+        cols="12"
+        sm="6"
+        md="6"
+      >
+        <v-card
+          class="pa-6 border text-center h-100"
+          variant="outlined"
+        >
+          <div class="text-h4 font-weight-bold text-info mb-1">
             {{ contributors?.length || 0 }}
           </div>
           <div class="text-subtitle-1 font-weight-bold">
@@ -144,7 +225,8 @@ export default defineContentConfig({
           Below is live content queried directly from the workspace's markdown database and rendered using pre-built theme layout blocks.
         </p>
 
-        <v-row>
+        <!-- Row 1: Long-form Articles & Short-form Notes -->
+        <v-row class="mb-6">
           <!-- Column 1: Articles List -->
           <v-col
             cols="12"
@@ -158,7 +240,6 @@ export default defineContentConfig({
                 <div class="d-flex align-center">
                   <v-icon
                     icon="mdi-newspaper-variant-outline"
-                    color="primary"
                     class="mr-2"
                   />
                   <h3 class="text-subtitle-1 font-weight-bold">
@@ -167,7 +248,7 @@ export default defineContentConfig({
                 </div>
                 <v-btn
                   size="small"
-                  color="primary"
+                  color="secondary"
                   variant="text"
                   to="/articles"
                   append-icon="mdi-arrow-right"
@@ -201,22 +282,74 @@ export default defineContentConfig({
             </v-card>
           </v-col>
 
-          <!-- Column 2: Contributors and Topics -->
+          <!-- Column 2: Notes List -->
           <v-col
             cols="12"
             md="6"
-            class="d-flex flex-column ga-6"
           >
-            <!-- Contributors List -->
             <v-card
-              class="pa-6 border d-flex flex-column"
+              class="pa-6 border h-100 d-flex flex-column"
+              variant="outlined"
+            >
+              <div class="d-flex justify-space-between align-center mb-4">
+                <div class="d-flex align-center">
+                  <v-icon
+                    icon="mdi-notebook-outline"
+                    class="mr-2"
+                  />
+                  <h3 class="text-subtitle-1 font-weight-bold">
+                    Notes Showcase
+                  </h3>
+                </div>
+                <v-btn
+                  size="small"
+                  color="secondary"
+                  variant="text"
+                  to="/notes"
+                  append-icon="mdi-arrow-right"
+                  class="text-none"
+                >
+                  View All
+                </v-btn>
+              </div>
+
+              <div class="flex-grow-1">
+                <div
+                  v-if="!notes || notes.length === 0"
+                  class="py-8 text-center text-medium-emphasis"
+                >
+                  No notes found in <code>content/notes/</code>.
+                </div>
+                <div
+                  v-else
+                  class="d-flex flex-column ga-4"
+                >
+                  <NoteCard
+                    v-for="note in notes"
+                    :key="note.path"
+                    :note="note"
+                  />
+                </div>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <!-- Row 2: Contributors, Topics & Tags -->
+        <v-row>
+          <!-- Column 1: Contributors List -->
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <v-card
+              class="pa-6 border h-100 d-flex flex-column"
               variant="outlined"
             >
               <div class="d-flex justify-space-between align-center mb-4">
                 <div class="d-flex align-center">
                   <v-icon
                     icon="mdi-account-group-outline"
-                    color="primary"
                     class="mr-2"
                   />
                   <h3 class="text-subtitle-1 font-weight-bold">
@@ -225,7 +358,7 @@ export default defineContentConfig({
                 </div>
                 <v-btn
                   size="small"
-                  color="success"
+                  color="secondary"
                   variant="text"
                   to="/contributors"
                   append-icon="mdi-arrow-right"
@@ -276,7 +409,14 @@ export default defineContentConfig({
                 </v-col>
               </v-row>
             </v-card>
+          </v-col>
 
+          <!-- Column 2: Taxonomies (Topics & Tags) -->
+          <v-col
+            cols="12"
+            md="6"
+            class="d-flex flex-column ga-6"
+          >
             <!-- Topics List -->
             <v-card
               class="pa-6 border d-flex flex-column"
@@ -286,7 +426,6 @@ export default defineContentConfig({
                 <div class="d-flex align-center">
                   <v-icon
                     icon="mdi-tag-multiple-outline"
-                    color="primary"
                     class="mr-2"
                   />
                   <h3 class="text-subtitle-1 font-weight-bold">
@@ -318,7 +457,7 @@ export default defineContentConfig({
                 <v-chip
                   v-for="topic in topics"
                   :key="topic.path"
-                  color="secondary"
+                  color="primary"
                   variant="tonal"
                   class="ma-1"
                   link
@@ -326,6 +465,53 @@ export default defineContentConfig({
                   prepend-icon="mdi-tag-outline"
                 >
                   {{ topic.title || unslugify(topic.path.split('/').pop() || '') }}
+                </v-chip>
+              </div>
+            </v-card>
+
+            <!-- Tags List -->
+            <v-card
+              class="pa-6 border d-flex flex-column"
+              variant="outlined"
+            >
+              <div class="d-flex justify-space-between align-center mb-4">
+                <div class="d-flex align-center">
+                  <v-icon
+                    icon="mdi-pound"
+                    color="indigo"
+                    class="mr-2"
+                  />
+                  <h3 class="text-subtitle-1 font-weight-bold">
+                    Tags Showcase
+                  </h3>
+                </div>
+              </div>
+
+              <p class="text-body-2 text-medium-emphasis mb-3">
+                Tags dynamically index notes and link to filtered feeds at <code>/tags/:slug</code>.
+              </p>
+
+              <div
+                v-if="!tags || tags.length === 0"
+                class="py-4 text-center text-medium-emphasis"
+              >
+                No tags found in notes.
+              </div>
+              <div
+                v-else
+                class="d-flex flex-wrap ga-2"
+              >
+                <v-chip
+                  v-for="tag in tags"
+                  :key="tag"
+                  color="indigo"
+                  variant="tonal"
+                  class="ma-1"
+                  link
+                  :to="`/tags/${slugify(tag)}`"
+                  prepend-icon="mdi-pound"
+                >
+                  {{ titleCase(tag) }}
                 </v-chip>
               </div>
             </v-card>

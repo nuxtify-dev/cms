@@ -17,6 +17,7 @@ export default defineAppConfig({
     email: {
       general: 'hello@nuxtify.dev',
       support: 'support@nuxtify.dev',
+      reply: 'hello@nuxtify.dev',
       provider: {
         // Need any URL so it displays
         defaultSubmitUrl: 'https://api.mailerlite.com/v2/groups/123456/subscribers',
@@ -74,6 +75,7 @@ export default defineAppConfig({
           title: 'CMS',
           links: [
             { text: 'Articles', to: '/articles' },
+            { text: 'Notes', to: '/notes' },
             { text: 'Topics', to: '/topics' },
             { text: 'Contributors', to: '/contributors' },
           ],

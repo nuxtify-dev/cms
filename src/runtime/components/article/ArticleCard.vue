@@ -3,8 +3,7 @@ import type { Article } from '../../../types/content'
 import {
   useRoute,
   computed,
-  useAsyncData,
-  usePublicCollection,
+  useContributor,
   unslugify,
 } from '#imports'
 
@@ -16,9 +15,7 @@ const props = defineProps<{
 // ROUTE
 const route = useRoute()
 
-const { data: author } = await useAsyncData(`author-${props.article.author}`, () => {
-  return usePublicCollection('contributors').path(`/contributors/${props.article.author}`).first()
-})
+const { data: author } = await useContributor(props.article.author)
 
 // STATE - LOCAL
 const primaryTopic = computed(() => props.article.topics?.[0] ?? '')

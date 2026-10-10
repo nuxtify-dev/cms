@@ -4,6 +4,7 @@ import {
   contributorSchema,
   articleSchema,
   topicSchema,
+  noteSchema,
 } from '../src/runtime/utils/contentSchemas'
 
 export default defineContentConfig({
@@ -34,6 +35,13 @@ export default defineContentConfig({
       type: 'page',
       source: 'topics/*.md',
       schema: topicSchema,
+    }),
+
+    // Notes
+    notes: defineCollection({
+      type: 'page',
+      source: 'notes/*.md',
+      schema: noteSchema,
     }),
   },
 })

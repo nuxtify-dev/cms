@@ -42,6 +42,9 @@ export default defineNuxtModule<ModuleOptions>().with({
     },
   },
   defaults: {
+    email: {
+      reply: '',
+    },
     content: {
       articles: {
         title: 'Articles',
@@ -52,6 +55,11 @@ export default defineNuxtModule<ModuleOptions>().with({
           // Same as Ghost: https://docs.ghost.org/themes/helpers/utility/reading_time
           wordsPerMinute: 275,
         },
+      },
+      notes: {
+        title: 'Notes',
+        subtitle: 'Short updates, thoughts, and links.',
+        description: '',
       },
       topics: {
         title: 'Topics',
@@ -100,6 +108,21 @@ export default defineNuxtModule<ModuleOptions>().with({
         name: 'articles-slug',
         path: '/articles/:slug',
         file: resolve('./runtime/pages/articles/[slug].vue'),
+      })
+      pages.unshift({
+        name: 'notes',
+        path: '/notes',
+        file: resolve('./runtime/pages/notes/index.vue'),
+      })
+      pages.unshift({
+        name: 'notes-slug',
+        path: '/notes/:slug',
+        file: resolve('./runtime/pages/notes/[slug].vue'),
+      })
+      pages.unshift({
+        name: 'tags-slug',
+        path: '/tags/:slug',
+        file: resolve('./runtime/pages/tags/[slug].vue'),
       })
       pages.unshift({
         name: 'topics',

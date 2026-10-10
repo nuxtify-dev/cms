@@ -15,6 +15,7 @@ import {
   unslugify,
   useReadingTime,
   useSiteConfig,
+  useContributor,
 } from '#imports'
 
 const route = useRoute()
@@ -25,9 +26,7 @@ if (!article.value) {
   throw createError({ status: 404, statusText: 'Article not found', fatal: import.meta.client })
 }
 
-const { data: author } = await useAsyncData(`article-author-${article.value.author}`, () => {
-  return usePublicCollection('contributors').path(`/contributors/${article.value?.author}`).first()
-})
+const { data: author } = await useContributor(article.value.author)
 
 const readTime = useReadingTime(article)
 const breadcrumbs = ref<BreadcrumbItem[]>([

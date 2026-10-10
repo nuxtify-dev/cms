@@ -61,3 +61,12 @@ export const topicSchema = z.object({
   image: imageSchema.optional(),
   draft: z.boolean().default(false),
 }).merge(seoSchema)
+
+export const noteSchema = z.object({
+  publishedAt: z.union([z.string(), z.date()]),
+  updatedAt: z.union([z.string(), z.date()]).optional(),
+  author: z.string(), // slug of contributor
+  image: imageSchema.optional(),
+  draft: z.boolean().default(false),
+  tags: z.array(z.string()).default([]).optional(),
+}).merge(seoSchema)
