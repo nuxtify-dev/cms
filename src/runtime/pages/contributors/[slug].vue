@@ -34,7 +34,10 @@ if (!contributor.value) {
   throw createError({ status: 404, statusText: 'Contributor not found', fatal: import.meta.client })
 }
 
+const articlesEnabled = appConfig.nuxtify?.content?.articles?.enabled !== false
+
 const { data: articles } = await useAsyncData(`articles-by-${slug}`, () => {
+  if (!articlesEnabled) return []
   return usePublicCollection('articles')
     .where('author', '=', slug)
     .order('publishedAt', 'DESC')

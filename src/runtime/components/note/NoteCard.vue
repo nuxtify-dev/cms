@@ -23,6 +23,7 @@ const appConfig = useAppConfig()
 const notesPrefix = normalizePrefix(appConfig.nuxtify?.content?.notes?.routePrefix, '/notes')
 const noteLink = computed(() => getContentItemLink(notesPrefix, props.note))
 const tagPrependIcon = computed(() => appConfig.nuxtify?.content?.tags?.prependIcon || undefined)
+const tagsEnabled = computed(() => appConfig.nuxtify?.content?.tags?.enabled !== false && appConfig.nuxtify?.content?.notes?.enabled !== false)
 
 // PAGE INFO
 const route = useRoute()
@@ -103,7 +104,7 @@ const publishedDate = computed(() => {
       <v-chip
         v-for="tag in note.tags"
         :key="tag"
-        :to="`/tags/${slugify(tag)}`"
+        :to="tagsEnabled ? `/tags/${slugify(tag)}` : undefined"
         :prepend-icon="tagPrependIcon"
         color="primary"
         variant="tonal"

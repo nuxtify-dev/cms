@@ -23,6 +23,7 @@ const route = useRoute()
 const slug = route.params.slug as string
 const notesPrefix = normalizePrefix(appConfig.nuxtify?.content?.notes?.routePrefix, '/notes')
 const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
+const contributorsEnabled = appConfig.nuxtify?.content?.contributors?.enabled !== false
 
 // Fetch note
 const { data: note } = await useAsyncData(`note-${route.path}`, async () => {
@@ -75,7 +76,7 @@ useSchemaOrg(note.value.schemaOrg || [
           {
             '@type': 'Person',
             'name': author.value.name,
-            'url': `${siteConfig.url}${contributorsPrefix}/${note.value.author}`,
+            ...(contributorsEnabled ? { url: `${siteConfig.url}${contributorsPrefix}/${note.value.author}` } : {}),
             'jobTitle': author.value.jobTitle ?? '',
             'honorificSuffix': author.value.honorificSuffix ?? '',
           },

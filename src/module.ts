@@ -48,6 +48,7 @@ export default defineNuxtModule<ModuleOptions>().with({
     },
     content: {
       articles: {
+        enabled: true,
         routePrefix: '/articles',
         title: 'Articles',
         subtitle: 'Long, in-depth posts.',
@@ -59,24 +60,28 @@ export default defineNuxtModule<ModuleOptions>().with({
         },
       },
       notes: {
+        enabled: true,
         routePrefix: '/notes',
         title: 'Notes',
         subtitle: 'Short updates, thoughts, and links.',
         description: '',
       },
       topics: {
+        enabled: true,
         routePrefix: '/topics',
         title: 'Topics',
         subtitle: 'Explore posts by category.',
         description: '',
       },
       contributors: {
+        enabled: true,
         routePrefix: '/contributors',
         title: 'Contributors',
         subtitle: 'The wonderful humans who make this website possible.',
         description: '',
       },
       tags: {
+        enabled: true,
         prependIcon: '',
       },
     },
@@ -89,32 +94,75 @@ export default defineNuxtModule<ModuleOptions>().with({
     const topicsPrefix = normalizePrefix(_options.content?.topics?.routePrefix, '/topics')
     const contributorsPrefix = normalizePrefix(_options.content?.contributors?.routePrefix, '/contributors')
 
+    const articlesEnabled = _options.content?.articles?.enabled !== false
+    const notesEnabled = _options.content?.notes?.enabled !== false
+    const topicsEnabled = _options.content?.topics?.enabled !== false
+    const contributorsEnabled = _options.content?.contributors?.enabled !== false
+    const tagsEnabled = _options.content?.tags?.enabled !== false && notesEnabled
+
     // Expose module options to app config with normalized route prefixes
-    _nuxt.options.appConfig.nuxtify = defu(_nuxt.options.appConfig.nuxtify || {}, {
-      ..._options,
-      content: {
-        ..._options.content,
-        articles: {
-          ..._options.content?.articles,
-          routePrefix: articlesPrefix,
-        },
-        notes: {
-          ..._options.content?.notes,
-          routePrefix: notesPrefix,
-        },
-        topics: {
-          ..._options.content?.topics,
-          routePrefix: topicsPrefix,
-        },
-        contributors: {
-          ..._options.content?.contributors,
-          routePrefix: contributorsPrefix,
-        },
-        tags: {
-          ..._options.content?.tags,
+    _nuxt.options.appConfig.nuxtify = defu(
+      _nuxt.options.appConfig.nuxtify || {},
+      {
+        ..._options,
+        content: {
+          ..._options.content,
+          articles: {
+            ..._options.content?.articles,
+            enabled: articlesEnabled,
+            routePrefix: articlesPrefix,
+          },
+          notes: {
+            ..._options.content?.notes,
+            enabled: notesEnabled,
+            routePrefix: notesPrefix,
+          },
+          topics: {
+            ..._options.content?.topics,
+            enabled: topicsEnabled,
+            routePrefix: topicsPrefix,
+          },
+          contributors: {
+            ..._options.content?.contributors,
+            enabled: contributorsEnabled,
+            routePrefix: contributorsPrefix,
+          },
+          tags: {
+            ..._options.content?.tags,
+            enabled: tagsEnabled,
+          },
         },
       },
-    })
+    )
+
+    // Exclude disabled routes from sitemap
+    const sitemapExcludes: string[] = []
+    if (!articlesEnabled) {
+      sitemapExcludes.push(articlesPrefix, `${articlesPrefix}/**`)
+    }
+    if (!notesEnabled) {
+      sitemapExcludes.push(notesPrefix, `${notesPrefix}/**`)
+    }
+    if (!topicsEnabled) {
+      sitemapExcludes.push(topicsPrefix, `${topicsPrefix}/**`)
+    }
+    if (!contributorsEnabled) {
+      sitemapExcludes.push(contributorsPrefix, `${contributorsPrefix}/**`)
+    }
+    if (!tagsEnabled) {
+      sitemapExcludes.push('/tags', '/tags/**')
+    }
+
+    if (sitemapExcludes.length > 0) {
+      const nuxtOptionsWithSitemap = _nuxt.options as typeof _nuxt.options & {
+        sitemap?: { exclude?: string[] }
+      }
+      nuxtOptionsWithSitemap.sitemap = nuxtOptionsWithSitemap.sitemap || {}
+      const existingExclude = Array.isArray(nuxtOptionsWithSitemap.sitemap.exclude)
+        ? nuxtOptionsWithSitemap.sitemap.exclude
+        : []
+      nuxtOptionsWithSitemap.sitemap.exclude = Array.from(new Set([...existingExclude, ...sitemapExcludes]))
+    }
 
     // Components
     addComponentsDir({
@@ -134,51 +182,61 @@ export default defineNuxtModule<ModuleOptions>().with({
         path: '/:slug?',
         file: resolve('./runtime/pages/[...slug].vue'),
       })
-      pages.unshift({
-        name: 'articles',
-        path: articlesPrefix,
-        file: resolve('./runtime/pages/articles/index.vue'),
-      })
-      pages.unshift({
-        name: 'articles-slug',
-        path: `${articlesPrefix}/:slug`,
-        file: resolve('./runtime/pages/articles/[slug].vue'),
-      })
-      pages.unshift({
-        name: 'notes',
-        path: notesPrefix,
-        file: resolve('./runtime/pages/notes/index.vue'),
-      })
-      pages.unshift({
-        name: 'notes-slug',
-        path: `${notesPrefix}/:slug`,
-        file: resolve('./runtime/pages/notes/[slug].vue'),
-      })
-      pages.unshift({
-        name: 'tags-slug',
-        path: '/tags/:slug',
-        file: resolve('./runtime/pages/tags/[slug].vue'),
-      })
-      pages.unshift({
-        name: 'topics',
-        path: topicsPrefix,
-        file: resolve('./runtime/pages/topics/index.vue'),
-      })
-      pages.unshift({
-        name: 'topics-slug',
-        path: `${topicsPrefix}/:slug`,
-        file: resolve('./runtime/pages/topics/[slug].vue'),
-      })
-      pages.unshift({
-        name: 'contributors',
-        path: contributorsPrefix,
-        file: resolve('./runtime/pages/contributors/index.vue'),
-      })
-      pages.unshift({
-        name: 'contributors-slug',
-        path: `${contributorsPrefix}/:slug`,
-        file: resolve('./runtime/pages/contributors/[slug].vue'),
-      })
+      if (articlesEnabled) {
+        pages.unshift({
+          name: 'articles',
+          path: articlesPrefix,
+          file: resolve('./runtime/pages/articles/index.vue'),
+        })
+        pages.unshift({
+          name: 'articles-slug',
+          path: `${articlesPrefix}/:slug`,
+          file: resolve('./runtime/pages/articles/[slug].vue'),
+        })
+      }
+      if (notesEnabled) {
+        pages.unshift({
+          name: 'notes',
+          path: notesPrefix,
+          file: resolve('./runtime/pages/notes/index.vue'),
+        })
+        pages.unshift({
+          name: 'notes-slug',
+          path: `${notesPrefix}/:slug`,
+          file: resolve('./runtime/pages/notes/[slug].vue'),
+        })
+      }
+      if (tagsEnabled) {
+        pages.unshift({
+          name: 'tags-slug',
+          path: '/tags/:slug',
+          file: resolve('./runtime/pages/tags/[slug].vue'),
+        })
+      }
+      if (topicsEnabled) {
+        pages.unshift({
+          name: 'topics',
+          path: topicsPrefix,
+          file: resolve('./runtime/pages/topics/index.vue'),
+        })
+        pages.unshift({
+          name: 'topics-slug',
+          path: `${topicsPrefix}/:slug`,
+          file: resolve('./runtime/pages/topics/[slug].vue'),
+        })
+      }
+      if (contributorsEnabled) {
+        pages.unshift({
+          name: 'contributors',
+          path: contributorsPrefix,
+          file: resolve('./runtime/pages/contributors/index.vue'),
+        })
+        pages.unshift({
+          name: 'contributors-slug',
+          path: `${contributorsPrefix}/:slug`,
+          file: resolve('./runtime/pages/contributors/[slug].vue'),
+        })
+      }
     })
   },
 })

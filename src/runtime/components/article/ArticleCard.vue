@@ -20,6 +20,7 @@ const route = useRoute()
 const appConfig = useAppConfig()
 const articlesPrefix = normalizePrefix(appConfig.nuxtify?.content?.articles?.routePrefix, '/articles')
 const topicsPrefix = normalizePrefix(appConfig.nuxtify?.content?.topics?.routePrefix, '/topics')
+const topicsEnabled = computed(() => appConfig.nuxtify?.content?.topics?.enabled !== false)
 
 const { data: author } = await useContributor(props.article.author)
 
@@ -39,11 +40,18 @@ const articleLink = computed(() => getContentItemLink(articlesPrefix, props.arti
       class="text-overline"
     >
       <NuxtLink
+        v-if="topicsEnabled"
         :to="`${topicsPrefix}/${primaryTopic}`"
         class="nf-article-primary-topic"
       >
         {{ unslugify(primaryTopic) }}
       </NuxtLink>
+      <span
+        v-else
+        class="nf-article-primary-topic"
+      >
+        {{ unslugify(primaryTopic) }}
+      </span>
     </div>
 
     <!-- Title -->

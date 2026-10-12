@@ -27,6 +27,8 @@ const slug = route.params.slug as string
 const articlesPrefix = normalizePrefix(appConfig.nuxtify?.content?.articles?.routePrefix, '/articles')
 const topicsPrefix = normalizePrefix(appConfig.nuxtify?.content?.topics?.routePrefix, '/topics')
 const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
+const topicsEnabled = appConfig.nuxtify?.content?.topics?.enabled !== false
+const contributorsEnabled = appConfig.nuxtify?.content?.contributors?.enabled !== false
 
 const { data: article } = await useAsyncData(`article-${route.path}`, async () => {
   const direct = await usePublicCollection('articles').path(route.path).first()
@@ -53,8 +55,8 @@ const breadcrumbs = ref<BreadcrumbItem[]>([
 if (article.value.topics?.length && article.value.topics[0]) {
   breadcrumbs.value.push({
     title: unslugify(article.value.topics[0]),
-    to: `${topicsPrefix}/${article.value.topics[0]}`,
-    disabled: false,
+    to: topicsEnabled ? `${topicsPrefix}/${article.value.topics[0]}` : undefined,
+    disabled: !topicsEnabled,
   })
 }
 
@@ -76,7 +78,7 @@ useSchemaOrg(article.value.schemaOrg || [
           {
             '@type': 'Person',
             'name': author.value.name ?? '',
-            'url': `${useSiteConfig().url}${contributorsPrefix}/${article.value.author}`,
+            ...(contributorsEnabled ? { url: `${useSiteConfig().url}${contributorsPrefix}/${article.value.author}` } : {}),
             'jobTitle': author.value.jobTitle ?? '',
             'honorificSuffix': author.value.honorificSuffix ?? '',
           },

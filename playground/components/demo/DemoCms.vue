@@ -12,30 +12,45 @@ import {
 const appConfig = useAppConfig()
 const tagPrependIcon = computed(() => appConfig.nuxtify?.content?.tags?.prependIcon || undefined)
 
+const articlesEnabled = computed(() => appConfig.nuxtify?.content?.articles?.enabled !== false)
+const notesEnabled = computed(() => appConfig.nuxtify?.content?.notes?.enabled !== false)
+const topicsEnabled = computed(() => appConfig.nuxtify?.content?.topics?.enabled !== false)
+const contributorsEnabled = computed(() => appConfig.nuxtify?.content?.contributors?.enabled !== false)
+const tagsEnabled = computed(() => appConfig.nuxtify?.content?.tags?.enabled !== false && notesEnabled.value)
+
+const articlesPrefix = computed(() => appConfig.nuxtify?.content?.articles?.routePrefix || '/articles')
+const notesPrefix = computed(() => appConfig.nuxtify?.content?.notes?.routePrefix || '/notes')
+const topicsPrefix = computed(() => appConfig.nuxtify?.content?.topics?.routePrefix || '/topics')
+const contributorsPrefix = computed(() => appConfig.nuxtify?.content?.contributors?.routePrefix || '/contributors')
+
 // FETCH LIVE CONTENT DATA
 const { data: articles } = await useAsyncData('demo-cms-articles', () => {
+  if (!articlesEnabled.value) return Promise.resolve([])
   return usePublicCollection('articles')
     .order('publishedAt', 'DESC')
     .all()
 })
 
 const { data: notes } = await useAsyncData('demo-cms-notes', () => {
+  if (!notesEnabled.value) return Promise.resolve([])
   return usePublicCollection('notes')
     .order('publishedAt', 'DESC')
     .all()
 })
 
 const { data: contributors } = await useAsyncData('demo-cms-contributors', () => {
+  if (!contributorsEnabled.value) return Promise.resolve([])
   return usePublicCollection('contributors').all()
 })
 
 const { data: topics } = await useAsyncData('demo-cms-topics', () => {
+  if (!topicsEnabled.value) return Promise.resolve([])
   return usePublicCollection('topics').all()
 })
 
 // EXTRACT ACTIVE TAGS FROM NOTES
 const tags = computed(() => {
-  if (!notes.value) return []
+  if (!tagsEnabled.value || !notes.value) return []
   const allTags = new Set<string>()
   notes.value.forEach((note) => {
     if (Array.isArray(note.tags)) {
@@ -106,6 +121,7 @@ export default defineContentConfig({
     <!-- Section 1: Dashboard Stats Overview -->
     <v-row class="mb-8">
       <v-col
+        v-if="articlesEnabled"
         cols="12"
         sm="6"
         md="4"
@@ -127,6 +143,7 @@ export default defineContentConfig({
       </v-col>
 
       <v-col
+        v-if="notesEnabled"
         cols="12"
         sm="6"
         md="4"
@@ -148,6 +165,7 @@ export default defineContentConfig({
       </v-col>
 
       <v-col
+        v-if="topicsEnabled"
         cols="12"
         sm="6"
         md="4"
@@ -169,6 +187,7 @@ export default defineContentConfig({
       </v-col>
 
       <v-col
+        v-if="tagsEnabled"
         cols="12"
         sm="6"
         md="6"
@@ -190,9 +209,10 @@ export default defineContentConfig({
       </v-col>
 
       <v-col
+        v-if="contributorsEnabled"
         cols="12"
         sm="6"
-        md="6"
+        :md="tagsEnabled ? 6 : 12"
       >
         <v-card
           class="pa-6 border text-center h-100"
@@ -230,11 +250,15 @@ export default defineContentConfig({
         </p>
 
         <!-- Row 1: Long-form Articles & Short-form Notes -->
-        <v-row class="mb-6">
+        <v-row
+          v-if="articlesEnabled || notesEnabled"
+          class="mb-6"
+        >
           <!-- Column 1: Articles List -->
           <v-col
+            v-if="articlesEnabled"
             cols="12"
-            md="6"
+            :md="notesEnabled ? 6 : 12"
           >
             <v-card
               class="pa-6 border h-100 d-flex flex-column"
@@ -254,7 +278,7 @@ export default defineContentConfig({
                   size="small"
                   color="secondary"
                   variant="text"
-                  to="/posts"
+                  :to="articlesPrefix"
                   append-icon="mdi-arrow-right"
                   class="text-none"
                 >
@@ -288,8 +312,9 @@ export default defineContentConfig({
 
           <!-- Column 2: Notes List -->
           <v-col
+            v-if="notesEnabled"
             cols="12"
-            md="6"
+            :md="articlesEnabled ? 6 : 12"
           >
             <v-card
               class="pa-6 border h-100 d-flex flex-column"
@@ -309,7 +334,7 @@ export default defineContentConfig({
                   size="small"
                   color="secondary"
                   variant="text"
-                  to="/notes"
+                  :to="notesPrefix"
                   append-icon="mdi-arrow-right"
                   class="text-none"
                 >
@@ -340,11 +365,12 @@ export default defineContentConfig({
         </v-row>
 
         <!-- Row 2: Contributors, Topics & Tags -->
-        <v-row>
+        <v-row v-if="contributorsEnabled || topicsEnabled || tagsEnabled">
           <!-- Column 1: Contributors List -->
           <v-col
+            v-if="contributorsEnabled"
             cols="12"
-            md="6"
+            :md="topicsEnabled || tagsEnabled ? 6 : 12"
           >
             <v-card
               class="pa-6 border h-100 d-flex flex-column"
@@ -364,7 +390,7 @@ export default defineContentConfig({
                   size="small"
                   color="secondary"
                   variant="text"
-                  to="/contributors"
+                  :to="contributorsPrefix"
                   append-icon="mdi-arrow-right"
                   class="text-none"
                 >
@@ -417,12 +443,14 @@ export default defineContentConfig({
 
           <!-- Column 2: Topics & Tags -->
           <v-col
+            v-if="topicsEnabled || tagsEnabled"
             cols="12"
-            md="6"
+            :md="contributorsEnabled ? 6 : 12"
             class="d-flex flex-column ga-6"
           >
             <!-- Topics List -->
             <v-card
+              v-if="topicsEnabled"
               class="pa-6 border d-flex flex-column"
               variant="outlined"
             >
@@ -440,7 +468,7 @@ export default defineContentConfig({
                   size="small"
                   color="secondary"
                   variant="text"
-                  to="/topics"
+                  :to="topicsPrefix"
                   append-icon="mdi-arrow-right"
                   class="text-none"
                 >
@@ -475,6 +503,7 @@ export default defineContentConfig({
 
             <!-- Tags List -->
             <v-card
+              v-if="tagsEnabled"
               class="pa-6 border d-flex flex-column"
               variant="outlined"
             >

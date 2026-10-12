@@ -13,13 +13,20 @@ const props = defineProps<{
 }>()
 
 const appConfig = useAppConfig()
+const contributorsEnabled = computed(() => appConfig.nuxtify?.content?.contributors?.enabled !== false)
 const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
-const authorLink = computed(() => getContentItemLink(contributorsPrefix, props.author))
+const authorLink = computed(() => {
+  if (!contributorsEnabled.value) return undefined
+  return getContentItemLink(contributorsPrefix, props.author)
+})
 </script>
 
 <template>
   <div>
-    <NuxtLink :to="authorLink">
+    <component
+      :is="authorLink ? 'NuxtLink' : 'div'"
+      :to="authorLink"
+    >
       <div class="d-flex align-center ga-3">
         <!-- Avatar -->
         <NuxtImg
@@ -47,7 +54,7 @@ const authorLink = computed(() => getContentItemLink(contributorsPrefix, props.a
           </span>
         </div>
       </div>
-    </NuxtLink>
+    </component>
   </div>
 </template>
 
