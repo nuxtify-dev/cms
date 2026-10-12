@@ -93,7 +93,7 @@ export default defineContentConfig({
           CMS & Content Showcase
         </h1>
         <p class="text-subtitle-1 text-medium-emphasis max-width-800">
-          The <strong>@nuxtify/cms</strong> module streamlines content management in Nuxt. It bundles predefined collection schemas, responsive UI components, a high-level query composable, and auto-configured sitemaps/SEO for articles, notes, topics, tags, and authors.
+          The <strong>@nuxtify/cms</strong> module streamlines content management in Nuxt. It bundles predefined collection schemas, responsive UI components, a high-level query composable, and auto-configured sitemaps/SEO for articles, notes, topics, tags, and contributors.
         </p>
         <v-divider class="mt-6" />
       </v-col>
@@ -114,7 +114,7 @@ export default defineContentConfig({
             {{ articles?.length || 0 }}
           </div>
           <div class="text-subtitle-1 font-weight-bold">
-            Articles Published
+            Articles
           </div>
           <div class="text-caption text-medium-emphasis">
             In-depth markdown files under <code>content/articles/</code>
@@ -135,10 +135,10 @@ export default defineContentConfig({
             {{ notes?.length || 0 }}
           </div>
           <div class="text-subtitle-1 font-weight-bold">
-            Notes & Updates
+            Notes
           </div>
           <div class="text-caption text-medium-emphasis">
-            Short markdown thoughts under <code>content/notes/</code>
+            Short markdown files under <code>content/notes/</code>
           </div>
         </v-card>
       </v-col>
@@ -156,10 +156,10 @@ export default defineContentConfig({
             {{ topics?.length || 0 }}
           </div>
           <div class="text-subtitle-1 font-weight-bold">
-            Active Topics & Tips
+            Topics
           </div>
           <div class="text-caption text-medium-emphasis">
-            Taxonomy layers under <code>content/topics/</code>
+            Topic markdown files under <code>content/topics/</code>
           </div>
         </v-card>
       </v-col>
@@ -177,7 +177,7 @@ export default defineContentConfig({
             {{ tags?.length || 0 }}
           </div>
           <div class="text-subtitle-1 font-weight-bold">
-            Content Tags
+            Tags
           </div>
           <div class="text-caption text-medium-emphasis">
             Dynamic tags tagged across notes
@@ -198,10 +198,10 @@ export default defineContentConfig({
             {{ contributors?.length || 0 }}
           </div>
           <div class="text-subtitle-1 font-weight-bold">
-            Authors & Contributors
+            Contributors
           </div>
           <div class="text-caption text-medium-emphasis">
-            Profile metadata files under <code>content/contributors/</code>
+            Contributor markdown files under <code>content/contributors/</code>
           </div>
         </v-card>
       </v-col>
@@ -353,7 +353,7 @@ export default defineContentConfig({
                     class="mr-2"
                   />
                   <h3 class="text-subtitle-1 font-weight-bold">
-                    Authors & Contributors
+                    Contributors
                   </h3>
                 </div>
                 <v-btn
@@ -411,7 +411,7 @@ export default defineContentConfig({
             </v-card>
           </v-col>
 
-          <!-- Column 2: Taxonomies (Topics & Tags) -->
+          <!-- Column 2: Topics & Tags -->
           <v-col
             cols="12"
             md="6"
@@ -429,7 +429,7 @@ export default defineContentConfig({
                     class="mr-2"
                   />
                   <h3 class="text-subtitle-1 font-weight-bold">
-                    Topics & Taxonomies
+                    Topics
                   </h3>
                 </div>
                 <v-btn
@@ -575,7 +575,7 @@ export default defineContentConfig({
               <h3 class="text-subtitle-1 font-weight-bold mb-2">
                 2. Smart Querying
               </h3>
-              <p class="text-body-2 text-medium-emphasis mb-4 flex-grow-1">
+              <p class="text-body-2 text-medium-emphasis mb-4">
                 Use the high-level <code>usePublicCollection</code> helper to fetch markdown content with pre-built support for hiding in-progress draft content.
               </p>
               <v-card
