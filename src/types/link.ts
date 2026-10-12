@@ -1,3 +1,4 @@
+import type { RouteLocationRaw } from 'vue-router'
 import type { VBtn } from 'vuetify/components'
 
 export interface PageLink {
@@ -16,6 +17,6 @@ export interface PageLink {
 
 export interface BreadcrumbItem {
   title: string
-  to: string
+  to?: string | RouteLocationRaw
   disabled?: boolean
 }

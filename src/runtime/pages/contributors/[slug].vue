@@ -36,9 +36,9 @@ if (!contributor.value) {
 
 const articlesEnabled = appConfig.nuxtify?.content?.articles?.enabled !== false
 
-const { data: articles } = await useAsyncData(`articles-by-${slug}`, () => {
+const { data: articles } = await useAsyncData(`articles-by-${slug}`, async () => {
   if (!articlesEnabled) return []
-  return usePublicCollection('articles')
+  return await usePublicCollection('articles')
     .where('author', '=', slug)
     .order('publishedAt', 'DESC')
     .all()

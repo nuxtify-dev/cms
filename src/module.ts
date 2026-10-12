@@ -154,14 +154,17 @@ export default defineNuxtModule<ModuleOptions>().with({
     }
 
     if (sitemapExcludes.length > 0) {
-      const nuxtOptionsWithSitemap = _nuxt.options as typeof _nuxt.options & {
-        sitemap?: { exclude?: string[] }
+      const nuxtOptions = _nuxt.options as unknown as Record<string, unknown>
+      if (nuxtOptions.sitemap !== false) {
+        const sitemapConfig = (nuxtOptions.sitemap && typeof nuxtOptions.sitemap === 'object')
+          ? (nuxtOptions.sitemap as { exclude?: string[] })
+          : {}
+        const existingExclude = Array.isArray(sitemapConfig.exclude)
+          ? sitemapConfig.exclude
+          : []
+        sitemapConfig.exclude = Array.from(new Set([...existingExclude, ...sitemapExcludes]))
+        nuxtOptions.sitemap = sitemapConfig
       }
-      nuxtOptionsWithSitemap.sitemap = nuxtOptionsWithSitemap.sitemap || {}
-      const existingExclude = Array.isArray(nuxtOptionsWithSitemap.sitemap.exclude)
-        ? nuxtOptionsWithSitemap.sitemap.exclude
-        : []
-      nuxtOptionsWithSitemap.sitemap.exclude = Array.from(new Set([...existingExclude, ...sitemapExcludes]))
     }
 
     // Components

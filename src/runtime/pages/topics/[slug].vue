@@ -28,9 +28,9 @@ if (!topic.value) {
 
 const articlesEnabled = appConfig.nuxtify?.content?.articles?.enabled !== false
 
-const { data: articles } = await useAsyncData(`articles-in-${slug}`, () => {
+const { data: articles } = await useAsyncData(`articles-in-${slug}`, async () => {
   if (!articlesEnabled) return []
-  return usePublicCollection('articles')
+  return await usePublicCollection('articles')
     .where('topics', 'LIKE', `%${slug}%`)
     .order('publishedAt', 'DESC')
     .all()
