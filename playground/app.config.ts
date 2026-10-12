@@ -24,6 +24,13 @@ export default defineAppConfig({
       },
     },
 
+    // Content
+    content: {
+      tags: {
+        prependIcon: 'mdi-pound',
+      },
+    },
+
     // Footer
     footer: {
       cta: {

@@ -22,6 +22,7 @@ const siteConfig = useSiteConfig()
 const appConfig = useAppConfig()
 const notesPrefix = normalizePrefix(appConfig.nuxtify?.content?.notes?.routePrefix, '/notes')
 const noteLink = computed(() => getContentItemLink(notesPrefix, props.note))
+const tagPrependIcon = computed(() => appConfig.nuxtify?.content?.tags?.prependIcon || undefined)
 
 // PAGE INFO
 const route = useRoute()
@@ -103,7 +104,8 @@ const publishedDate = computed(() => {
         v-for="tag in note.tags"
         :key="tag"
         :to="`/tags/${slugify(tag)}`"
-        color="grey-darken-1"
+        :prepend-icon="tagPrependIcon"
+        color="primary"
         variant="tonal"
         label
         class="mr-2 mb-2"

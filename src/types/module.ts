@@ -40,6 +40,9 @@ export interface CmsModuleOptions {
       subtitle?: string
       description?: string
     }
+    tags?: {
+      prependIcon?: string
+    }
   }
 }
 

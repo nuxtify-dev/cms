@@ -76,6 +76,9 @@ export default defineNuxtModule<ModuleOptions>().with({
         subtitle: 'The wonderful humans who make this website possible.',
         description: '',
       },
+      tags: {
+        prependIcon: '',
+      },
     },
   },
   setup(_options, _nuxt) {
@@ -106,6 +109,9 @@ export default defineNuxtModule<ModuleOptions>().with({
         contributors: {
           ..._options.content?.contributors,
           routePrefix: contributorsPrefix,
+        },
+        tags: {
+          ..._options.content?.tags,
         },
       },
     })

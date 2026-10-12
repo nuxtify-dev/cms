@@ -2,11 +2,15 @@
 import {
   usePublicCollection,
   useAsyncData,
+  useAppConfig,
   unslugify,
   slugify,
   titleCase,
   computed,
 } from '#imports'
+
+const appConfig = useAppConfig()
+const tagPrependIcon = computed(() => appConfig.nuxtify?.content?.tags?.prependIcon || undefined)
 
 // FETCH LIVE CONTENT DATA
 const { data: articles } = await useAsyncData('demo-cms-articles', () => {
@@ -477,8 +481,7 @@ export default defineContentConfig({
               <div class="d-flex justify-space-between align-center mb-4">
                 <div class="d-flex align-center">
                   <v-icon
-                    icon="mdi-pound"
-                    color="indigo"
+                    :icon="tagPrependIcon || 'mdi-pound'"
                     class="mr-2"
                   />
                   <h3 class="text-subtitle-1 font-weight-bold">
@@ -504,12 +507,12 @@ export default defineContentConfig({
                 <v-chip
                   v-for="tag in tags"
                   :key="tag"
-                  color="indigo"
+                  color="primary"
                   variant="tonal"
                   class="ma-1"
                   link
                   :to="`/tags/${slugify(tag)}`"
-                  prepend-icon="mdi-pound"
+                  :prepend-icon="tagPrependIcon"
                 >
                   {{ titleCase(tag) }}
                 </v-chip>
