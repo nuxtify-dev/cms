@@ -70,6 +70,12 @@ The key commands specified in `package.json` are:
 | **`npm run lint:fix`** | Standard ESLint auto-fix for the whole codebase. |
 | **`npm run prepack`** | Builds the final production-ready package distribution under `/dist`. |
 
+### Agent & Developer Workflow Rules
+> [!IMPORTANT]
+> **Always run the following commands as the last step of every code modification:**
+> - `npm run test:types`: checks TypeScript compiler types across both core module and playground.
+> - `npm run lint:fix`: auto-fixes ESLint issues and maintains code style.
+
 ---
 
 ## Core Composables & Schemas
