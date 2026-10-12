@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.2.0
+
+[compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.4...v0.2.0)
+
+### 🚀 Enhancements
+
+- Add article read time ([dd50141](https://github.com/nuxtify-dev/cms/commit/dd50141))
+- Add notes and tags ([c9ce720](https://github.com/nuxtify-dev/cms/commit/c9ce720))
+- Configurable route prefix ([3754c16](https://github.com/nuxtify-dev/cms/commit/3754c16))
+- Custom tag icon ([d151d57](https://github.com/nuxtify-dev/cms/commit/d151d57))
+- Allow disabling of CMS features ([0c24d5c](https://github.com/nuxtify-dev/cms/commit/0c24d5c))
+
+### 🩹 Fixes
+
+- **ui:** Allow classes passthrough to author byline ([91749fc](https://github.com/nuxtify-dev/cms/commit/91749fc))
+- **ui:** Article top margin ([75700a8](https://github.com/nuxtify-dev/cms/commit/75700a8))
+- Type errors ([9d06f5c](https://github.com/nuxtify-dev/cms/commit/9d06f5c))
+
+### 💅 Refactors
+
+- Author byline ([a13cc16](https://github.com/nuxtify-dev/cms/commit/a13cc16))
+
 ## v0.1.4
 
 [compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.3...v0.1.4)
