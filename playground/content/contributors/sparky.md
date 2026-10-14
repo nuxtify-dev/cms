@@ -3,7 +3,7 @@ name: Sparky
 jobTitle: Nuxtify Mascot
 description: Sparky is the official mascot of Nuxtify, specializing in morale boosting and high-speed tail wagging.
 image:
-  src: content/contributors/sparky-avatar.jpg
+  src: content/contributors/sparky.jpg
   alt: Sparky avatar
 publishedAt: 2026-05-29T19:10:02Z
 sitemap:

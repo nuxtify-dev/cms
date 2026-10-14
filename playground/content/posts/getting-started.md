@@ -69,6 +69,16 @@ Thanks to Nuxt Content's MDC syntax, you can embed rich Vue components straight 
 ::page-card-simple{title="Explore Component Showcase" description="Check out all pre-built page cards, banners, heroes, and FAQ accordions." buttonText="View Demo Components" to="/demo-components" class="my-6"}
 ::
 
+## Working with Images
+
+Nuxtify CMS makes it effortless to display images and media in your content. Static assets placed in the `public/` directory are served directly.
+
+Meet [**Sparky**](/contributors/sparky), the official Nuxtify mascot who helps guide you through your content creation journey:
+
+![Sparky the Nuxtify Mascot](/content/contributors/sparky.jpg)
+
+You can use standard Markdown image syntax or leverage MDC components to display responsive visuals, banners, and diagrams anywhere in your posts.
+
 ## Next Steps
 
 1. Add your profile under `content/contributors/`.

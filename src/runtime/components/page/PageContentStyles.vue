@@ -121,4 +121,20 @@
   border: none;
   border-top: 1px solid rgba(var(--v-theme-on-background), 0.12);
 }
+
+/* Images */
+:deep(img) {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 100%;
+  height: auto;
+}
+@media (min-width: 600px) {
+  :deep(img) {
+    max-width: 85%;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+}
 </style>
