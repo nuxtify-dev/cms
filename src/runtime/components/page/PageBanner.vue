@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <section class="page-banner bg-primary text-white text-center my-4 my-md-0">
+  <section class="page-banner bg-primary text-center my-4 my-md-0">
     <v-row
       justify="center"
       class="mx-2 py-4 py-md-16"
@@ -16,7 +16,7 @@ defineProps<{
         lg="8"
         xl="4"
       >
-        <div class="text-h6 font-weight-medium">
+        <div class="text-h6 text-white">
           <slot>
             {{ text }}
           </slot>
