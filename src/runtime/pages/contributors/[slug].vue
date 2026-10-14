@@ -102,7 +102,7 @@ useSchemaOrg(contributor.value.schemaOrg || [
         v-if="contributor.socials"
         #actions
       >
-        <div>
+        <div class="mt-2">
           <v-btn
             v-if="contributor.socials.website"
             :href="contributor.socials.website"

@@ -54,7 +54,7 @@ const { textAlign } = useAlignment(toRef(props, 'align'))
 
       <div
         v-if="description || $slots.description"
-        class="text-subtitle-1 text-md-h6 text-medium-emphasis mt-2"
+        class="text-subtitle-1 text-md-h6 text-medium-emphasis mt-2 mt-md-4"
       >
         <slot
           name="description"
