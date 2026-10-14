@@ -123,7 +123,7 @@
 }
 
 /* Images */
-:deep(img) {
+:deep(p img) {
   display: block;
   margin-right: auto;
   margin-left: auto;
@@ -131,7 +131,7 @@
   height: auto;
 }
 @media (min-width: 600px) {
-  :deep(img) {
+  :deep(p img) {
     max-width: 85%;
     margin-top: 16px;
     margin-bottom: 16px;
