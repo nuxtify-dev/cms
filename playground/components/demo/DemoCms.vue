@@ -129,6 +129,7 @@ export default defineContentConfig({
         <v-card
           class="pa-6 border text-center h-100"
           variant="outlined"
+          to="/posts"
         >
           <div class="text-h4 font-weight-bold text-info mb-1">
             {{ articles?.length || 0 }}
@@ -151,6 +152,7 @@ export default defineContentConfig({
         <v-card
           class="pa-6 border text-center h-100"
           variant="outlined"
+          to="/notes"
         >
           <div class="text-h4 font-weight-bold text-info mb-1">
             {{ notes?.length || 0 }}
@@ -173,6 +175,7 @@ export default defineContentConfig({
         <v-card
           class="pa-6 border text-center h-100"
           variant="outlined"
+          to="/topics"
         >
           <div class="text-h4 font-weight-bold text-info mb-1">
             {{ topics?.length || 0 }}
@@ -217,6 +220,7 @@ export default defineContentConfig({
         <v-card
           class="pa-6 border text-center h-100"
           variant="outlined"
+          to="/contributors"
         >
           <div class="text-h4 font-weight-bold text-info mb-1">
             {{ contributors?.length || 0 }}
