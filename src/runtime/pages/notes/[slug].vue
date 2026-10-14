@@ -90,24 +90,14 @@ useSchemaOrg(note.value.schemaOrg || [
 </script>
 
 <template>
-  <PageContainer>
-    <v-row
-      justify="center"
-      class="my-4"
-    >
-      <v-col
-        cols="12"
-        sm="10"
-        lg="8"
-        xl="6"
-      >
-        <PageBreadcrumbs :breadcrumbs="breadcrumbs" />
+  <PageContainer class="my-8">
+    <PageBody>
+      <PageBreadcrumbs :breadcrumbs="breadcrumbs" />
 
-        <NoteCard
-          v-if="note"
-          :note
-        />
-      </v-col>
-    </v-row>
+      <NoteCard
+        v-if="note"
+        :note
+      />
+    </PageBody>
   </PageContainer>
 </template>

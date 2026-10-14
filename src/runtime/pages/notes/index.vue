@@ -51,8 +51,8 @@ useSchemaOrg([
         <v-col
           cols="12"
           sm="10"
-          lg="8"
-          xl="6"
+          lg="12"
+          xl="10"
         >
           <NoteCard
             v-for="note in notes"

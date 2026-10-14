@@ -49,11 +49,11 @@ const publishedDate = computed(() => {
 <template>
   <v-card
     variant="outlined"
-    class="mb-4 pa-4"
+    class="mb-4 pa-6"
   >
     <div
       v-if="publishedDate"
-      class="float-right text-body-2 ml-4"
+      class="float-right text-body-2"
     >
       <!-- Published Date -->
       <NuxtLink
@@ -90,10 +90,9 @@ const publishedDate = computed(() => {
       </div>
 
       <!-- Content -->
-      <ContentRenderer
-        :value="note"
-        class="text-body-1"
-      />
+      <PageContentStyles>
+        <ContentRenderer :value="note" />
+      </PageContentStyles>
     </article>
 
     <!-- Tags -->
@@ -124,7 +123,7 @@ const publishedDate = computed(() => {
 
     <!-- Actions -->
     <v-card-actions
-      class="justify-end align-end pa-0 mt-2 mt-sm-0"
+      class="justify-space-between justify-sm-end align-end pa-0 mt-4 mt-sm-0"
       style="min-height: unset"
     >
       <!-- Reply -->
