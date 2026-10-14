@@ -15,7 +15,7 @@ defineProps<{
       cols="12"
       md="10"
       lg="8"
-      xl="5"
+      xl="4"
     >
       <div
         v-if="overline || $slots.overline"

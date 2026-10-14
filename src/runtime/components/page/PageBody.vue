@@ -4,7 +4,7 @@
       cols="12"
       md="10"
       lg="8"
-      xl="5"
+      xl="4"
     >
       <slot />
     </v-col>
