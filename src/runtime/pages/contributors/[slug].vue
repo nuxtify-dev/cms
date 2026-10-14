@@ -82,7 +82,6 @@ useSchemaOrg(contributor.value.schemaOrg || [
     <PageTitle
       :title="contributor.name"
       :description="contributor.jobTitle || contributor.description"
-      align="center"
     >
       <template
         v-if="contributor.image"
@@ -200,22 +199,19 @@ useSchemaOrg(contributor.value.schemaOrg || [
 
     <PageBody>
       <PageContentStyles>
-        <ContentRenderer
-          :value="contributor"
-          class="mb-12"
-        />
+        <ContentRenderer :value="contributor" />
       </PageContentStyles>
 
       <template v-if="articles?.length">
-        <v-divider class="mb-12" />
+        <v-divider class="my-12" />
         <h2 class="font-weight-bold mb-6">
           Articles by {{ contributor.title }}
         </h2>
         <ArticleCard
-          v-for="article in articles"
+          v-for="(article, index) in articles"
           :key="article.path"
           :article
-          class="mt-12"
+          :class="{ 'mt-12': index > 0 }"
         />
       </template>
 

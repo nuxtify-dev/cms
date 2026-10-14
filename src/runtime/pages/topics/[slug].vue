@@ -58,16 +58,15 @@ useSchemaOrg(topic.value.schemaOrg || [])
       />
 
       <template v-if="articles?.length">
-        <v-divider class="mb-12" />
         <h2 class="text-h4 font-weight-bold mb-6">
           Articles in {{ topic.title }}
         </h2>
 
         <ArticleCard
-          v-for="article in articles"
+          v-for="(article, index) in articles"
           :key="article.path"
           :article
-          class="mt-12"
+          :class="{ 'mt-12': index > 0 }"
         />
       </template>
     </PageBody>

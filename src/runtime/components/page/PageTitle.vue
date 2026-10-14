@@ -20,7 +20,7 @@ const { textAlign } = useAlignment(toRef(props, 'align'))
   <v-row
     justify="center"
     :class="textAlign"
-    class="py-4 py-md-16"
+    class="pt-4 pt-md-16 pb-2 pb-md-4"
   >
     <v-col
       cols="12"
@@ -54,7 +54,7 @@ const { textAlign } = useAlignment(toRef(props, 'align'))
 
       <div
         v-if="description || $slots.description"
-        class="text-subtitle-1 text-md-h6 text-medium-emphasis mt-2 mt-md-4"
+        class="text-subtitle-1 text-md-h6 text-medium-emphasis mt-2"
       >
         <slot
           name="description"
