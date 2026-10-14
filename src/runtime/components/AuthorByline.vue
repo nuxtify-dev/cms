@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Contributor } from '../../types/content'
+import { NuxtLink } from '#components'
 import {
   honoraryName,
   useAppConfig,
@@ -24,7 +25,7 @@ const authorLink = computed(() => {
 <template>
   <div>
     <component
-      :is="authorLink ? 'NuxtLink' : 'div'"
+      :is="authorLink ? NuxtLink : 'div'"
       :to="authorLink"
     >
       <div class="d-flex align-center ga-3">
