@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.2
+
+[compare changes](https://github.com/nuxtify-dev/cms/compare/v0.2.1...v0.2.2)
+
+### 🩹 Fixes
+
+- **ui:** Only apply image styles to p img ([6dd0ca8](https://github.com/nuxtify-dev/cms/commit/6dd0ca8))
+- **ui:** Page banner text color ([f96824e](https://github.com/nuxtify-dev/cms/commit/f96824e))
+
 ## v0.2.1
 
 [compare changes](https://github.com/nuxtify-dev/cms/compare/v0.2.0...v0.2.1)
