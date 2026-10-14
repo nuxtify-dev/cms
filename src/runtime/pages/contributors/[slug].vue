@@ -112,6 +112,7 @@ useSchemaOrg(contributor.value.schemaOrg || [
             variant="plain"
             icon="mdi-web"
           />
+          <!-- TODO: Replace with correct icon -->
           <v-btn
             v-if="contributor.socials.bluesky"
             :href="contributor.socials.bluesky"
@@ -119,8 +120,9 @@ useSchemaOrg(contributor.value.schemaOrg || [
             target="_blank"
             rel="noopener"
             variant="plain"
-            icon="mdi-bluesky"
+            icon="mdi-link-variant"
           />
+          <!-- TODO: Replace with correct icon -->
           <v-btn
             v-if="contributor.socials.x"
             :href="contributor.socials.x"
@@ -166,6 +168,7 @@ useSchemaOrg(contributor.value.schemaOrg || [
             variant="plain"
             icon="mdi-instagram"
           />
+          <!-- TODO: Replace with correct icon -->
           <v-btn
             v-if="contributor.socials.tiktok"
             :href="contributor.socials.tiktok"
@@ -173,7 +176,7 @@ useSchemaOrg(contributor.value.schemaOrg || [
             target="_blank"
             rel="noopener"
             variant="plain"
-            icon="mdi-tiktok"
+            icon="mdi-link-variant"
           />
           <v-btn
             v-if="contributor.socials.pinterest"
