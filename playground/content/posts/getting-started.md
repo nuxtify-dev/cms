@@ -12,6 +12,15 @@ sitemap:
 
 Nuxtify CMS bridges the gap between file-based content simplicity and the rich interactive styling of Vuetify. Whether you are building documentation, a technical blog, or marketing landing pages, Nuxtify provides structured content management right out of the box.
 
+| Feature | Description |
+| :--- | :--- |
+| **Content Engine** | Nuxt Content v3 with Git-backed file storage |
+| **UI Framework** | Vuetify 3 Material Design components out of the box |
+| **Type Safety** | Zod-validated frontmatter for articles, authors, and topics |
+| **Rich Interactivity** | MDC support for embedding Vue components in Markdown |
+
+With these features combined, you can build rich, content-driven experiences without sacrificing developer velocity or design fidelity.
+
 ## Core Capabilities
 
 Nuxtify is built around structured Nuxt Content v3 collections paired with modern Vue 3 components:
@@ -20,8 +29,6 @@ Nuxtify is built around structured Nuxt Content v3 collections paired with moder
 - **Dynamic Routing:** Pre-configured routes for `/articles`, `/topics`, and `/contributors` with zero setup.
 - **Rich MDC Support:** Use Vuetify and Nuxtify layout components directly within Markdown documents.
 - **Integrated SEO:** Automated OpenGraph metadata, JSON-LD Schema.org graphs, and sitemap entries.
-
----
 
 ## Organizing Content Collections
 
@@ -40,6 +47,8 @@ content/
 
 To publish an article, create a new Markdown file inside `content/articles/` with frontmatter adhering to the `articleSchema`:
 
+#### YAML
+
 ```yaml
 ---
 title: My First Article
@@ -52,8 +61,6 @@ publishedAt: 2026-10-10T12:00:00Z
 ```
 
 > **Tip:** The `author` field references the filename slug in `content/contributors/` (e.g., `sparky` references `sparky.md`).
-
----
 
 ## Interactive Components in Markdown
 
