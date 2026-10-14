@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.2.1
+
+[compare changes](https://github.com/nuxtify-dev/cms/compare/v0.2.0...v0.2.1)
+
+### 🩹 Fixes
+
+- **ui:** Add placeholder social icons ([3666a84](https://github.com/nuxtify-dev/cms/commit/3666a84))
+- **ui:** Author byline link ([3264303](https://github.com/nuxtify-dev/cms/commit/3264303))
+- **ui:** Notes styling and width ([848f276](https://github.com/nuxtify-dev/cms/commit/848f276))
+- **ui:** Markdown image formatting ([d48a1ae](https://github.com/nuxtify-dev/cms/commit/d48a1ae))
+
 ## v0.2.0
 
 [compare changes](https://github.com/nuxtify-dev/cms/compare/v0.1.4...v0.2.0)
