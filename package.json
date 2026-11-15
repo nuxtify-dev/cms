@@ -51,7 +51,7 @@
     "test:nuxt": "vitest --project nuxt"
   },
   "dependencies": {
-    "@nuxt/content": "^3.16.1",
+    "@nuxt/content": "^3.16.2",
     "@nuxt/kit": "^4.4.6",
     "@nuxtify/pages": "^0.7.4",
     "@nuxtjs/seo": "^5.1.3",
