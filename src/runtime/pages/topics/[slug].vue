@@ -7,10 +7,10 @@ import {
   useSeoMeta,
   useSchemaOrg,
   createError,
-  useAppConfig,
+  useNuxtifyConfig,
 } from '#imports'
 
-const appConfig = useAppConfig()
+const nuxtifyConfig = useNuxtifyConfig()
 const route = useRoute()
 const slug = route.params.slug as string
 
@@ -26,7 +26,7 @@ if (!topic.value) {
   throw createError({ status: 404, statusText: 'Topic not found', fatal: import.meta.client })
 }
 
-const articlesEnabled = appConfig.nuxtify?.content?.articles?.enabled !== false
+const articlesEnabled = nuxtifyConfig.content?.articles?.enabled !== false
 
 const { data: articles } = await useAsyncData(`articles-in-${slug}`, async () => {
   if (!articlesEnabled) return []

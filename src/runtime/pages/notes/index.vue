@@ -4,22 +4,22 @@ import {
   usePublicCollection,
   useSeoMeta,
   useSchemaOrg,
-  useAppConfig,
+  useNuxtifyConfig,
   titleCase,
   defineWebPage,
   useAsyncData,
 } from '#imports'
 
-const appConfig = useAppConfig()
+const nuxtifyConfig = useNuxtifyConfig()
 const { data: notes } = await useAsyncData('notes', () => {
   return usePublicCollection('notes')
     .order('publishedAt', 'DESC')
     .all()
 })
 
-const description = appConfig.nuxtify.content.notes?.description ?? ''
-const title = appConfig.nuxtify.content.notes?.title ?? 'Notes'
-const subtitle = appConfig.nuxtify.content.notes?.subtitle ?? ''
+const description = nuxtifyConfig.content?.notes?.description ?? ''
+const title = nuxtifyConfig.content?.notes?.title ?? 'Notes'
+const subtitle = nuxtifyConfig.content?.notes?.subtitle ?? ''
 
 useSeoMeta({
   title: subtitle ? `${title} - ${titleCase(subtitle).replace(/\.$/, '')}` : title,
@@ -38,8 +38,8 @@ useSchemaOrg([
 <template>
   <PageContainer class="mt-4">
     <PageTitle
-      :title="appConfig.nuxtify.content.notes?.title"
-      :description="appConfig.nuxtify.content.notes?.subtitle"
+      :title="nuxtifyConfig.content?.notes?.title"
+      :description="nuxtifyConfig.content?.notes?.subtitle"
       align="center"
     />
 

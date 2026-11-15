@@ -5,7 +5,7 @@ import {
   computed,
   useContributor,
   unslugify,
-  useAppConfig,
+  useNuxtifyConfig,
   getContentItemLink,
   normalizePrefix,
 } from '#imports'
@@ -17,10 +17,10 @@ const props = defineProps<{
 
 // ROUTE & CONFIG
 const route = useRoute()
-const appConfig = useAppConfig()
-const articlesPrefix = normalizePrefix(appConfig.nuxtify?.content?.articles?.routePrefix, '/articles')
-const topicsPrefix = normalizePrefix(appConfig.nuxtify?.content?.topics?.routePrefix, '/topics')
-const topicsEnabled = computed(() => appConfig.nuxtify?.content?.topics?.enabled !== false)
+const nuxtifyConfig = useNuxtifyConfig()
+const articlesPrefix = normalizePrefix(nuxtifyConfig.content?.articles?.routePrefix, '/articles')
+const topicsPrefix = normalizePrefix(nuxtifyConfig.content?.topics?.routePrefix, '/topics')
+const topicsEnabled = computed(() => nuxtifyConfig.content?.topics?.enabled !== false)
 
 const { data: author } = await useContributor(props.article.author)
 

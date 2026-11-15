@@ -12,12 +12,12 @@ import {
   definePerson,
   slugify,
   useSiteConfig,
-  useAppConfig,
+  useNuxtifyConfig,
   normalizePrefix,
 } from '#imports'
 
-const appConfig = useAppConfig()
-const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
+const nuxtifyConfig = useNuxtifyConfig()
+const contributorsPrefix = normalizePrefix(nuxtifyConfig.content?.contributors?.routePrefix, '/contributors')
 const route = useRoute()
 const slug = route.params.slug as string
 
@@ -34,7 +34,7 @@ if (!contributor.value) {
   throw createError({ status: 404, statusText: 'Contributor not found', fatal: import.meta.client })
 }
 
-const articlesEnabled = appConfig.nuxtify?.content?.articles?.enabled !== false
+const articlesEnabled = nuxtifyConfig.content?.articles?.enabled !== false
 
 const { data: articles } = await useAsyncData(`articles-by-${slug}`, async () => {
   if (!articlesEnabled) return []

@@ -14,16 +14,16 @@ import {
   defineBreadcrumb,
   useSiteConfig,
   useContributor,
-  useAppConfig,
+  useNuxtifyConfig,
   normalizePrefix,
 } from '#imports'
 
-const appConfig = useAppConfig()
+const nuxtifyConfig = useNuxtifyConfig()
 const route = useRoute()
 const slug = route.params.slug as string
-const notesPrefix = normalizePrefix(appConfig.nuxtify?.content?.notes?.routePrefix, '/notes')
-const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
-const contributorsEnabled = appConfig.nuxtify?.content?.contributors?.enabled !== false
+const notesPrefix = normalizePrefix(nuxtifyConfig.content?.notes?.routePrefix, '/notes')
+const contributorsPrefix = normalizePrefix(nuxtifyConfig.content?.contributors?.routePrefix, '/contributors')
+const contributorsEnabled = nuxtifyConfig.content?.contributors?.enabled !== false
 
 // Fetch note
 const { data: note } = await useAsyncData(`note-${route.path}`, async () => {
@@ -49,7 +49,7 @@ const { data: author } = await useContributor(note.value.author)
 // Breadcrumbs
 const breadcrumbs = ref<BreadcrumbItem[]>([
   {
-    title: appConfig.nuxtify?.content?.notes?.title || 'Notes',
+    title: nuxtifyConfig.content?.notes?.title || 'Notes',
     disabled: false,
     to: notesPrefix,
   },

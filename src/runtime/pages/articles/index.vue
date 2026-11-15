@@ -4,30 +4,30 @@ import {
   usePublicCollection,
   useSeoMeta,
   useSchemaOrg,
-  useAppConfig,
+  useNuxtifyConfig,
   titleCase,
   defineWebPage,
   useAsyncData,
 } from '#imports'
 
-const appConfig = useAppConfig()
+const nuxtifyConfig = useNuxtifyConfig()
 const { data: articles } = await useAsyncData('articles', () => {
   return usePublicCollection('articles')
     .order('publishedAt', 'DESC')
     .all()
 })
 
-const description = appConfig.nuxtify.content.articles.description
+const title = nuxtifyConfig.content?.articles?.title ?? 'Articles'
+const subtitle = nuxtifyConfig.content?.articles?.subtitle ?? ''
+const description = nuxtifyConfig.content?.articles?.description ?? ''
 useSeoMeta({
-  title: `${appConfig.nuxtify.content.articles.title} - ${titleCase(
-    appConfig.nuxtify.content.articles.subtitle,
-  ).replace(/\.$/, '')}`,
+  title: subtitle ? `${title} - ${titleCase(subtitle).replace(/\.$/, '')}` : title,
   description,
 })
 useSchemaOrg([
   defineWebPage({
     '@type': 'CollectionPage',
-    'headline': appConfig.nuxtify.content.articles.title,
+    'headline': title,
     description,
   }),
 ])
@@ -36,8 +36,8 @@ useSchemaOrg([
 <template>
   <PageContainer>
     <PageTitle
-      :title="appConfig.nuxtify.content.articles.title"
-      :description="appConfig.nuxtify.content.articles.subtitle"
+      :title
+      :description="subtitle"
     />
 
     <PageBody>

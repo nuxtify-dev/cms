@@ -2,7 +2,7 @@ import type { Article } from '../../types/content'
 import {
   computed,
   toValue,
-  useAppConfig,
+  useNuxtifyConfig,
   type ComputedRef,
   type MaybeRefOrGetter,
 } from '#imports'
@@ -48,10 +48,10 @@ function countWords(text: string): number {
 export function useReadingTime(
   article: MaybeRefOrGetter<Article | null | undefined>,
 ): ComputedRef<number | string | undefined> {
-  const appConfig = useAppConfig()
+  const nuxtifyConfig = useNuxtifyConfig()
 
   return computed(() => {
-    const config = appConfig.nuxtify?.content?.articles?.readTime
+    const config = nuxtifyConfig.content?.articles?.readTime
     if (config?.enabled === false) {
       return undefined
     }

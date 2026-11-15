@@ -4,7 +4,7 @@ import {
   usePublicCollection,
   useSeoMeta,
   useSchemaOrg,
-  useAppConfig,
+  useNuxtifyConfig,
   titleCase,
   defineWebPage,
   useAsyncData,
@@ -12,23 +12,23 @@ import {
   normalizePrefix,
 } from '#imports'
 
-const appConfig = useAppConfig()
-const topicsPrefix = normalizePrefix(appConfig.nuxtify?.content?.topics?.routePrefix, '/topics')
+const nuxtifyConfig = useNuxtifyConfig()
+const topicsPrefix = normalizePrefix(nuxtifyConfig.content?.topics?.routePrefix, '/topics')
 const { data: topics } = await useAsyncData('topics', () => {
   return usePublicCollection('topics').all()
 })
 
-const description = appConfig.nuxtify.content.topics.description
+const title = nuxtifyConfig.content?.topics?.title ?? 'Topics'
+const subtitle = nuxtifyConfig.content?.topics?.subtitle ?? ''
+const description = nuxtifyConfig.content?.topics?.description ?? ''
 useSeoMeta({
-  title: `${appConfig.nuxtify.content.topics.title} - ${titleCase(
-    appConfig.nuxtify.content.topics.subtitle,
-  ).replace(/\.$/, '')}`,
+  title: subtitle ? `${title} - ${titleCase(subtitle).replace(/\.$/, '')}` : title,
   description,
 })
 useSchemaOrg([
   defineWebPage({
     '@type': 'CollectionPage',
-    'headline': appConfig.nuxtify.content.topics.title,
+    'headline': title,
     description,
   }),
 ])
@@ -37,8 +37,8 @@ useSchemaOrg([
 <template>
   <PageContainer>
     <PageTitle
-      :title="appConfig.nuxtify.content.topics.title"
-      :description="appConfig.nuxtify.content.topics.subtitle"
+      :title
+      :description="subtitle"
     />
 
     <PageBody>

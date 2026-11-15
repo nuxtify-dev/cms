@@ -4,7 +4,7 @@ import {
   computed,
   useRoute,
   useSiteConfig,
-  useAppConfig,
+  useNuxtifyConfig,
   useContributor,
   slugify,
   titleCase,
@@ -19,11 +19,11 @@ const props = defineProps<{
 
 // STATE - GLOBAL
 const siteConfig = useSiteConfig()
-const appConfig = useAppConfig()
-const notesPrefix = normalizePrefix(appConfig.nuxtify?.content?.notes?.routePrefix, '/notes')
+const nuxtifyConfig = useNuxtifyConfig()
+const notesPrefix = normalizePrefix(nuxtifyConfig.content?.notes?.routePrefix, '/notes')
 const noteLink = computed(() => getContentItemLink(notesPrefix, props.note))
-const tagPrependIcon = computed(() => appConfig.nuxtify?.content?.tags?.prependIcon || undefined)
-const tagsEnabled = computed(() => appConfig.nuxtify?.content?.tags?.enabled !== false && appConfig.nuxtify?.content?.notes?.enabled !== false)
+const tagPrependIcon = computed(() => nuxtifyConfig.content?.tags?.prependIcon || undefined)
+const tagsEnabled = computed(() => nuxtifyConfig.content?.tags?.enabled !== false && nuxtifyConfig.content?.notes?.enabled !== false)
 
 // PAGE INFO
 const route = useRoute()
@@ -128,8 +128,8 @@ const publishedDate = computed(() => {
     >
       <!-- Reply -->
       <v-btn
-        v-if="appConfig.nuxtify?.email?.reply"
-        :href="`mailto:${appConfig.nuxtify.email.reply}?subject=[REPLY] Thoughts on ${note.title}&body=%0A%0A${siteConfig.url}${noteLink}`"
+        v-if="nuxtifyConfig.email?.reply"
+        :href="`mailto:${nuxtifyConfig.email.reply}?subject=[REPLY] Thoughts on ${note.title}&body=%0A%0A${siteConfig.url}${noteLink}`"
         prepend-icon="mdi-reply"
         color="primary"
       >

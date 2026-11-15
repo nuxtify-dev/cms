@@ -12,6 +12,8 @@ import { normalizePrefix } from './runtime/utils/routes'
 // Types
 import type { ModuleOptions } from './types/module'
 
+export type { CmsModuleOptions, Link, ModuleOptions, NavigationItem, PageModuleOptions, TitledLinks } from './types/module'
+
 export default defineNuxtModule<ModuleOptions>().with({
   meta: {
     name,
@@ -23,7 +25,7 @@ export default defineNuxtModule<ModuleOptions>().with({
   },
   moduleDependencies: {
     '@nuxtify/pages': {
-      version: '>=0.7.0',
+      version: '>=0.8.0',
     },
     '@nuxtjs/seo': {
       version: '>=5.1.3',
@@ -133,7 +135,7 @@ export default defineNuxtModule<ModuleOptions>().with({
           },
         },
       },
-    )
+    ) as ModuleOptions
 
     // Exclude disabled routes from sitemap
     const sitemapExcludes: string[] = []
@@ -174,6 +176,20 @@ export default defineNuxtModule<ModuleOptions>().with({
 
     // Composables
     addImportsDir(resolve('./runtime/composables'))
+
+    // Override useNuxtifyConfig from @nuxtify/core and @nuxtify/pages with CMS-typed version
+    _nuxt.hook('imports:extend', (imports) => {
+      for (let i = imports.length - 1; i >= 0; i--) {
+        const imp = imports[i]
+        if (
+          imp
+          && (imp.as || imp.name) === 'useNuxtifyConfig'
+          && (imp.from.includes('@nuxtify/core') || imp.from.includes('@nuxtify/pages'))
+        ) {
+          imports.splice(i, 1)
+        }
+      }
+    })
 
     // Utils
     addImportsDir(resolve('./runtime/utils'))

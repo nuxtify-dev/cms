@@ -2,26 +2,26 @@
 import {
   usePublicCollection,
   useAsyncData,
-  useAppConfig,
+  useNuxtifyConfig,
   unslugify,
   slugify,
   titleCase,
   computed,
 } from '#imports'
 
-const appConfig = useAppConfig()
-const tagPrependIcon = computed(() => appConfig.nuxtify?.content?.tags?.prependIcon || undefined)
+const nuxtifyConfig = useNuxtifyConfig()
+const tagPrependIcon = computed(() => nuxtifyConfig.content?.tags?.prependIcon || undefined)
 
-const articlesEnabled = computed(() => appConfig.nuxtify?.content?.articles?.enabled !== false)
-const notesEnabled = computed(() => appConfig.nuxtify?.content?.notes?.enabled !== false)
-const topicsEnabled = computed(() => appConfig.nuxtify?.content?.topics?.enabled !== false)
-const contributorsEnabled = computed(() => appConfig.nuxtify?.content?.contributors?.enabled !== false)
-const tagsEnabled = computed(() => appConfig.nuxtify?.content?.tags?.enabled !== false && notesEnabled.value)
+const articlesEnabled = computed(() => nuxtifyConfig.content?.articles?.enabled !== false)
+const notesEnabled = computed(() => nuxtifyConfig.content?.notes?.enabled !== false)
+const topicsEnabled = computed(() => nuxtifyConfig.content?.topics?.enabled !== false)
+const contributorsEnabled = computed(() => nuxtifyConfig.content?.contributors?.enabled !== false)
+const tagsEnabled = computed(() => nuxtifyConfig.content?.tags?.enabled !== false && notesEnabled.value)
 
-const articlesPrefix = computed(() => appConfig.nuxtify?.content?.articles?.routePrefix || '/articles')
-const notesPrefix = computed(() => appConfig.nuxtify?.content?.notes?.routePrefix || '/notes')
-const topicsPrefix = computed(() => appConfig.nuxtify?.content?.topics?.routePrefix || '/topics')
-const contributorsPrefix = computed(() => appConfig.nuxtify?.content?.contributors?.routePrefix || '/contributors')
+const articlesPrefix = computed(() => nuxtifyConfig.content?.articles?.routePrefix || '/articles')
+const notesPrefix = computed(() => nuxtifyConfig.content?.notes?.routePrefix || '/notes')
+const topicsPrefix = computed(() => nuxtifyConfig.content?.topics?.routePrefix || '/topics')
+const contributorsPrefix = computed(() => nuxtifyConfig.content?.contributors?.routePrefix || '/contributors')
 
 // FETCH LIVE CONTENT DATA
 const { data: articles } = await useAsyncData('demo-cms-articles', () => {

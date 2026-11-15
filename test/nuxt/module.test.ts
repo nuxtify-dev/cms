@@ -24,10 +24,16 @@ interface MockNuxtOptions {
   [key: string]: unknown
 }
 
+interface MockImport {
+  name: string
+  as?: string
+  from: string
+}
+
 interface MockNuxt {
   version: string
   options: MockNuxtOptions
-  hook: (name: string, cb: (pages: NuxtPage[]) => void) => void
+  hook: (name: string, cb: (arg: never) => void) => void
   callHook: () => Promise<void>
 }
 
@@ -35,7 +41,10 @@ type ModuleRunner = (options: ModuleOptions, nuxt: Nuxt) => Promise<unknown>
 const runModule = cmsModule as unknown as ModuleRunner
 
 describe('cms module enabled flags and sitemap exclusions', () => {
-  const createMockNuxt = (customOptions: Partial<MockNuxtOptions> = {}) => {
+  const createMockNuxt = (
+    customOptions: Partial<MockNuxtOptions> = {},
+    imports: MockImport[] = [],
+  ) => {
     const pages: NuxtPage[] = []
     const nuxt: MockNuxt = {
       version: '4.0.0',
@@ -46,15 +55,18 @@ describe('cms module enabled flags and sitemap exclusions', () => {
         buildDir: '.nuxt',
         ...customOptions,
       },
-      hook: (name: string, cb: (pages: NuxtPage[]) => void) => {
+      hook: (name: string, cb: (arg: never) => void) => {
         if (name === 'pages:extend') {
-          cb(pages)
+          (cb as (pages: NuxtPage[]) => void)(pages)
+        }
+        else if (name === 'imports:extend') {
+          (cb as (imports: MockImport[]) => void)(imports)
         }
       },
       callHook: async () => {},
     }
     nuxtCtx.set(nuxt as unknown as Nuxt, true)
-    return { nuxt, pages }
+    return { nuxt, pages, imports }
   }
 
   it('enables all routes and produces no sitemap excludes by default', async () => {
@@ -176,5 +188,42 @@ describe('cms module enabled flags and sitemap exclusions', () => {
 
     const pageNames = pages.map(p => p.name)
     expect(pageNames).not.toContain('tags-slug')
+  })
+
+  it('overrides useNuxtifyConfig imports from @nuxtify/core and @nuxtify/pages', async () => {
+    const imports: MockImport[] = [
+      { name: 'useNuxtifyConfig', from: '@nuxtify/core/dist/runtime/composables/nuxtify' },
+      { name: 'useNuxtifyConfig', from: '@nuxtify/pages/dist/runtime/composables/nuxtify' },
+      { name: 'useNuxtifyConfig', from: '/src/runtime/composables/nuxtify' },
+      { name: 'useDialog', from: '@nuxtify/core/dist/runtime/composables/dialog' },
+    ]
+    const { nuxt } = createMockNuxt({}, imports)
+
+    await runModule({
+      email: {
+        general: 'hello@example.com',
+        support: 'support@example.com',
+        reply: 'reply@example.com',
+        provider: {
+          defaultSubmitUrl: 'https://example.com/subscribe',
+        },
+      },
+      navigation: {
+        primary: [
+          { text: 'Home', to: '/' },
+          {
+            title: 'CMS',
+            links: [
+              { text: 'Articles', description: 'Read posts', icon: 'mdi-post', to: '/articles' },
+            ],
+          },
+        ],
+      },
+    }, nuxt as unknown as Nuxt)
+
+    expect(imports).toEqual([
+      { name: 'useNuxtifyConfig', from: '/src/runtime/composables/nuxtify' },
+      { name: 'useDialog', from: '@nuxtify/core/dist/runtime/composables/dialog' },
+    ])
   })
 })

@@ -3,7 +3,7 @@ import type { Contributor } from '../../types/content'
 import { NuxtLink } from '#components'
 import {
   honoraryName,
-  useAppConfig,
+  useNuxtifyConfig,
   computed,
   getContentItemLink,
   normalizePrefix,
@@ -13,9 +13,9 @@ const props = defineProps<{
   author: Contributor
 }>()
 
-const appConfig = useAppConfig()
-const contributorsEnabled = computed(() => appConfig.nuxtify?.content?.contributors?.enabled !== false)
-const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
+const nuxtifyConfig = useNuxtifyConfig()
+const contributorsEnabled = computed(() => nuxtifyConfig.content?.contributors?.enabled !== false)
+const contributorsPrefix = normalizePrefix(nuxtifyConfig.content?.contributors?.routePrefix, '/contributors')
 const authorLink = computed(() => {
   if (!contributorsEnabled.value) return undefined
   return getContentItemLink(contributorsPrefix, props.author)

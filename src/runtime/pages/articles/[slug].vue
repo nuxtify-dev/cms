@@ -16,19 +16,19 @@ import {
   useReadingTime,
   useSiteConfig,
   useContributor,
-  useAppConfig,
+  useNuxtifyConfig,
   normalizePrefix,
 } from '#imports'
 
-const appConfig = useAppConfig()
+const nuxtifyConfig = useNuxtifyConfig()
 const route = useRoute()
 const slug = route.params.slug as string
 
-const articlesPrefix = normalizePrefix(appConfig.nuxtify?.content?.articles?.routePrefix, '/articles')
-const topicsPrefix = normalizePrefix(appConfig.nuxtify?.content?.topics?.routePrefix, '/topics')
-const contributorsPrefix = normalizePrefix(appConfig.nuxtify?.content?.contributors?.routePrefix, '/contributors')
-const topicsEnabled = appConfig.nuxtify?.content?.topics?.enabled !== false
-const contributorsEnabled = appConfig.nuxtify?.content?.contributors?.enabled !== false
+const articlesPrefix = normalizePrefix(nuxtifyConfig.content?.articles?.routePrefix, '/articles')
+const topicsPrefix = normalizePrefix(nuxtifyConfig.content?.topics?.routePrefix, '/topics')
+const contributorsPrefix = normalizePrefix(nuxtifyConfig.content?.contributors?.routePrefix, '/contributors')
+const topicsEnabled = nuxtifyConfig.content?.topics?.enabled !== false
+const contributorsEnabled = nuxtifyConfig.content?.contributors?.enabled !== false
 
 const { data: article } = await useAsyncData(`article-${route.path}`, async () => {
   const direct = await usePublicCollection('articles').path(route.path).first()
@@ -47,7 +47,7 @@ const { data: author } = await useContributor(article.value.author)
 const readTime = useReadingTime(article)
 const breadcrumbs = ref<BreadcrumbItem[]>([
   {
-    title: appConfig.nuxtify?.content?.articles?.title || 'Articles',
+    title: nuxtifyConfig.content?.articles?.title || 'Articles',
     to: articlesPrefix,
   },
 ])
