@@ -1,6 +1,6 @@
 import type { Nuxt, NuxtPage } from '@nuxt/schema'
 import { describe, expect, it } from 'vitest'
-import { nuxtCtx } from '@nuxt/kit'
+import { runWithNuxtContext } from '@nuxt/kit'
 import cmsModule from '../../src/module'
 import type { ModuleOptions } from '../../src/types/module'
 
@@ -44,7 +44,8 @@ interface MockNuxt {
 }
 
 type ModuleRunner = (options: ModuleOptions, nuxt: Nuxt) => Promise<unknown>
-const runModule = cmsModule as unknown as ModuleRunner
+const runModule = (options: ModuleOptions, nuxt: Nuxt) =>
+  runWithNuxtContext(nuxt, () => (cmsModule as unknown as ModuleRunner)(options, nuxt))
 
 describe('cms module enabled flags and sitemap exclusions', () => {
   const createMockNuxt = (
@@ -76,7 +77,6 @@ describe('cms module enabled flags and sitemap exclusions', () => {
       },
       callHook: async () => {},
     }
-    nuxtCtx.set(nuxt as unknown as Nuxt, true)
     return { nuxt, pages, imports, afterParseHooks }
   }
 
