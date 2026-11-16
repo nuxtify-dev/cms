@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.3.0
+
+[compare changes](https://github.com/nuxtify-dev/cms/compare/v0.2.2...v0.3.0)
+
+### 🚀 Enhancements
+
+- **seo:** Improve Schema.org structured data across pages and components ([428c0d5](https://github.com/nuxtify-dev/cms/commit/428c0d5))
+- **docs:** Add docs layout, routing, and toc ([660995f](https://github.com/nuxtify-dev/cms/commit/660995f))
+- Add toc to article page ([4a7e89e](https://github.com/nuxtify-dev/cms/commit/4a7e89e))
+
+### 🩹 Fixes
+
+- **seo:** Filter drafts and custom prefixes in sitemap, add article OG meta ([8360a5a](https://github.com/nuxtify-dev/cms/commit/8360a5a))
+- **test:** NuxtCtx deprecation ([ca26e28](https://github.com/nuxtify-dev/cms/commit/ca26e28))
+- **dx:** Deprecated createError props ([5e777cc](https://github.com/nuxtify-dev/cms/commit/5e777cc))
+- **build:** Annotate public collection composable return types ([0c49fbc](https://github.com/nuxtify-dev/cms/commit/0c49fbc))
+
+### 🏡 Chore
+
+- **deps:** ⚠️  Update nuxtify pages ([5363fa0](https://github.com/nuxtify-dev/cms/commit/5363fa0))
+- ⚠️  Support @nuxtify/core v0.10.1 and @nuxtify/pages v0.8.0 types ([5278de5](https://github.com/nuxtify-dev/cms/commit/5278de5))
+
+#### ⚠️ Breaking Changes
+
+- **deps:** ⚠️  Update nuxtify pages ([5363fa0](https://github.com/nuxtify-dev/cms/commit/5363fa0))
+- ⚠️  Support @nuxtify/core v0.10.1 and @nuxtify/pages v0.8.0 types ([5278de5](https://github.com/nuxtify-dev/cms/commit/5278de5))
+
 ## v0.2.2
 
 [compare changes](https://github.com/nuxtify-dev/cms/compare/v0.2.1...v0.2.2)
