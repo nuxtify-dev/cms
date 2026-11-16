@@ -26,6 +26,10 @@ export interface CmsModuleOptions {
         enabled?: boolean
         wordsPerMinute?: number
       }
+      toc?: {
+        enabled?: boolean
+        title?: string
+      }
     }
     notes?: {
       enabled?: boolean

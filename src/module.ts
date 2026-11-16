@@ -62,6 +62,10 @@ export default defineNuxtModule<ModuleOptions>().with({
           // Same as Ghost: https://docs.ghost.org/themes/helpers/utility/reading_time
           wordsPerMinute: 275,
         },
+        toc: {
+          enabled: true,
+          title: 'On this page',
+        },
       },
       notes: {
         enabled: true,

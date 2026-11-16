@@ -93,6 +93,10 @@ describe('cms module enabled flags and sitemap exclusions', () => {
     expect(nuxt.options.appConfig.nuxtify?.content?.docs?.enabled).toBe(true)
     expect(nuxt.options.appConfig.nuxtify?.content?.docs?.routePrefix).toBe('/docs')
     expect((nuxt.options.appConfig.nuxtify?.content?.articles as { schemaType?: string } | undefined)?.schemaType).toBe('Article')
+    expect((nuxt.options.appConfig.nuxtify?.content?.articles as { toc?: { enabled?: boolean, title?: string } } | undefined)?.toc).toEqual({
+      enabled: true,
+      title: 'On this page',
+    })
     expect((nuxt.options.appConfig.nuxtify?.content?.notes as { schemaType?: string } | undefined)?.schemaType).toBe('BlogPosting')
     expect((nuxt.options.appConfig.nuxtify?.content?.docs as { schemaType?: string } | undefined)?.schemaType).toBe('TechArticle')
     expect(JSON.stringify(nuxt.options.plugins)).toContain('brandFallback')

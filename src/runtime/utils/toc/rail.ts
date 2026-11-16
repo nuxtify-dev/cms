@@ -74,6 +74,25 @@ export function flattenTocItems(links: PageTocLink[]): FlattenedTocItem[] {
   return items
 }
 
+export interface TocVisibilityOptions {
+  configEnabled?: boolean
+  pageToc?: boolean
+  links?: PageTocLink[]
+  minHeadings?: number
+}
+
+export function isTocEnabled({
+  configEnabled = true,
+  pageToc = true,
+  links = [],
+  minHeadings = 1,
+}: TocVisibilityOptions): boolean {
+  if (configEnabled === false || pageToc === false) {
+    return false
+  }
+  return flattenTocItems(links).length >= minHeadings
+}
+
 export function buildRailPolyline(items: MeasuredTocItem[], railBottom: number): PolylinePoint[] {
   const first = items[0]
   if (!first) return []

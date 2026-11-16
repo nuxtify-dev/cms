@@ -65,6 +65,7 @@ export const articleSchema = z.object({
   draft: z.boolean().default(false),
   topics: z.array(z.string()).default([]).optional(),
   readTime: z.union([z.number(), z.string()]).optional(),
+  toc: z.boolean().default(true),
   schemaType: articleSchemaTypeEnum.optional(),
 }).merge(seoSchema)
 

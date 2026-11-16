@@ -21,8 +21,9 @@ export interface Contributor extends PageCollectionItemBase, Omit<z.infer<typeof
 }
 export type ContributorSocials = NonNullable<Contributor['socials']>
 
-export interface Article extends PageCollectionItemBase, Omit<z.infer<typeof articleSchema>, 'draft'> {
+export interface Article extends PageCollectionItemBase, Omit<z.infer<typeof articleSchema>, 'draft' | 'toc'> {
   draft?: boolean
+  toc?: boolean
 }
 
 export interface Topic extends PageCollectionItemBase, Omit<z.infer<typeof topicSchema>, 'draft'> {
