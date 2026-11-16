@@ -23,7 +23,7 @@ const subtitle = nuxtifyConfig.content?.articles?.subtitle ?? ''
 const description = nuxtifyConfig.content?.articles?.description ?? ''
 useSeoMeta({
   title: subtitle ? `${title} - ${titleCase(subtitle).replace(/\.$/, '')}` : title,
-  description,
+  description: description || subtitle || undefined,
 })
 useContentPageSchema(
   { title, path: articlesPrefix },

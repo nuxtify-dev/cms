@@ -8,7 +8,7 @@ import {
 } from '@nuxt/kit'
 import { defu } from 'defu'
 import { name, version } from '../package.json'
-import { normalizePrefix } from './runtime/utils/routes'
+import { applyContentSitemapMeta, normalizePrefix } from './runtime/utils/routes'
 
 // Types
 import type { ModuleOptions } from './types/module'
@@ -88,6 +88,7 @@ export default defineNuxtModule<ModuleOptions>().with({
       tags: {
         enabled: true,
         prependIcon: '',
+        description: '',
       },
     },
   },
@@ -171,6 +172,21 @@ export default defineNuxtModule<ModuleOptions>().with({
         nuxtOptions.sitemap = sitemapConfig
       }
     }
+
+    // Normalize parsed content sitemap & robots metadata for drafts, disabled collections, and custom route prefixes
+    _nuxt.hook('content:file:afterParse', (ctx) => {
+      applyContentSitemapMeta({
+        collectionName: ctx.collection.name,
+        content: ctx.content,
+        isDev: _nuxt.options.dev,
+        collections: {
+          articles: { enabled: articlesEnabled, routePrefix: articlesPrefix },
+          notes: { enabled: notesEnabled, routePrefix: notesPrefix },
+          topics: { enabled: topicsEnabled, routePrefix: topicsPrefix },
+          contributors: { enabled: contributorsEnabled, routePrefix: contributorsPrefix },
+        },
+      })
+    })
 
     // Components
     addComponentsDir({

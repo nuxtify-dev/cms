@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createSiteConfigStack } from 'site-config-stack'
 import {
+  buildArticleSeoMeta,
   buildBrandSiteConfigFallback,
   getBreadcrumbsSchema,
   mergeSchemaOrgNodes,
@@ -158,6 +159,50 @@ describe('seo utilities', () => {
       expect(articleSchemaTypeEnum.parse('Article')).toBe('Article')
       expect(articleSchemaTypeEnum.parse('TechArticle')).toBe('TechArticle')
       expect(() => articleSchemaTypeEnum.parse('Product')).toThrow()
+    })
+  })
+
+  describe('buildArticleSeoMeta', () => {
+    it('emits Open Graph article fields and normalized fallback ogImage', () => {
+      const meta = buildArticleSeoMeta({
+        title: 'Nuxtify Guide',
+        description: 'Deep dive into Nuxtify CMS.',
+        publishedAt: new Date('2026-05-29T19:10:02Z'),
+        updatedAt: '2026-06-01T10:00:00Z',
+        image: { src: 'images/hero.png', alt: 'Hero' },
+      }, { tags: ['Tips', 'Nuxt'] })
+
+      expect(meta).toEqual({
+        title: 'Nuxtify Guide',
+        description: 'Deep dive into Nuxtify CMS.',
+        ogType: 'article',
+        articlePublishedTime: '2026-05-29T19:10:02.000Z',
+        articleModifiedTime: '2026-06-01T10:00:00Z',
+        articleTag: ['Tips', 'Nuxt'],
+        ogImage: '/images/hero.png',
+      })
+    })
+
+    it('preserves explicit frontmatter seo overrides without emitting empty tags', () => {
+      const meta = buildArticleSeoMeta({
+        title: 'Fallback Title',
+        description: '',
+        image: { src: '/images/default.png' },
+        seo: {
+          title: 'Custom SEO Title',
+          description: 'Custom SEO description',
+          ogImage: 'https://cdn.example.com/custom.png',
+        },
+      })
+
+      expect(meta).toEqual({
+        title: 'Custom SEO Title',
+        description: 'Custom SEO description',
+        ogType: 'article',
+        ogImage: 'https://cdn.example.com/custom.png',
+      })
+      expect(meta).not.toHaveProperty('articlePublishedTime')
+      expect(meta).not.toHaveProperty('articleTag')
     })
   })
 })

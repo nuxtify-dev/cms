@@ -30,3 +30,61 @@ export function getContentItemLink(
   const normalized = normalizePrefix(prefix)
   return slug ? `${normalized}/${slug}` : normalized
 }
+
+export interface ContentSitemapRule {
+  enabled: boolean
+  routePrefix: string
+}
+
+export interface ContentAfterParseContext {
+  collectionName: string
+  content: Record<string, unknown>
+  isDev: boolean
+  collections: Partial<Record<'articles' | 'notes' | 'topics' | 'contributors', ContentSitemapRule>>
+}
+
+/**
+ * Normalizes `sitemap` and `robots` metadata for parsed `@nuxt/content` items:
+ * - Excludes `draft: true` items from sitemap and search indexing outside dev mode.
+ * - Excludes items belonging to disabled collections regardless of folder path.
+ * - Maps collection items to their configured `routePrefix` permalink in `sitemap.loc`
+ *   unless `sitemap` is disabled (`false`), `robots` disallows indexing, or `sitemap.loc` is set.
+ */
+export function applyContentSitemapMeta(ctx: ContentAfterParseContext): void {
+  const { collectionName, content, isDev, collections } = ctx
+
+  if (!isDev && content.draft === true) {
+    content.sitemap = false
+    content.robots = false
+    return
+  }
+
+  const rule = collections[collectionName as keyof typeof collections]
+  if (!rule) return
+
+  if (!rule.enabled) {
+    content.sitemap = false
+    return
+  }
+
+  const robotsDisabled = content.robots === false
+    || (typeof content.robots === 'string' && content.robots.toLowerCase().includes('noindex'))
+  if (content.sitemap === false || robotsDisabled) {
+    return
+  }
+
+  const loc = getContentItemLink(rule.routePrefix, content as { stem?: string, path?: string })
+  if (!loc) return
+
+  const existingSitemap = (content.sitemap && typeof content.sitemap === 'object')
+    ? (content.sitemap as Record<string, unknown>)
+    : {}
+  if (typeof existingSitemap.loc === 'string' && existingSitemap.loc.trim()) {
+    return
+  }
+
+  content.sitemap = {
+    ...existingSitemap,
+    loc,
+  }
+}

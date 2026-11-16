@@ -24,8 +24,10 @@ const { data: notes } = await useAsyncData(`notes-tagged-${slug}`, () => {
     .all()
 })
 
-const title = `Posts about ${titleCase(tag)}`
-const description = 'Discover these and many more posts on hundreds of topics.'
+const tagTitle = titleCase(tag)
+const title = `Posts about ${tagTitle}`
+const configuredDescription = nuxtifyConfig.content?.tags?.description?.trim()
+const description = configuredDescription || `Browse notes tagged with ${tagTitle}.`
 useSeoMeta({
   title,
   description,
@@ -58,8 +60,8 @@ useContentPageSchema(
 <template>
   <PageContainer>
     <PageTitle
-      :title="title"
-      description="Discover these and many more posts on hundreds of topics."
+      :title
+      :description
     />
 
     <PageBody>

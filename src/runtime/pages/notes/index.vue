@@ -24,7 +24,7 @@ const subtitle = nuxtifyConfig.content?.notes?.subtitle ?? ''
 
 useSeoMeta({
   title: subtitle ? `${title} - ${titleCase(subtitle).replace(/\.$/, '')}` : title,
-  description,
+  description: description || subtitle || undefined,
 })
 
 useContentPageSchema(

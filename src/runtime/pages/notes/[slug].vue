@@ -13,6 +13,7 @@ import {
   useContributor,
   useNuxtifyConfig,
   useArticleSchema,
+  buildArticleSeoMeta,
   normalizePrefix,
 } from '#imports'
 
@@ -51,12 +52,13 @@ const breadcrumbs = ref<BreadcrumbItem[]>([
   },
 ])
 
+const noteKeywords = note.value.tags?.map(tag => titleCase(unslugify(tag)))
+
 // SEO
-const seoTitle = note.value.seo?.title ?? note.value.title ?? 'Note'
-useSeoMeta(note.value.seo || {
-  title: seoTitle,
-  description: note.value.description ?? '',
-})
+useSeoMeta(buildArticleSeoMeta({
+  ...note.value,
+  title: note.value.title ?? 'Note',
+}, { tags: noteKeywords }))
 
 // Schema.org
 useArticleSchema({
@@ -66,7 +68,7 @@ useArticleSchema({
   schemaType: nuxtifyConfig.content?.notes?.schemaType,
   breadcrumbs,
   section: note.value.tags?.[0] ? titleCase(unslugify(note.value.tags[0])) : undefined,
-  keywords: note.value.tags?.map(tag => titleCase(unslugify(tag))),
+  keywords: noteKeywords,
 })
 </script>
 

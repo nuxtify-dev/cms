@@ -30,7 +30,7 @@ The `<PageBanner>` component creates a full-width background section to highligh
 ## 3. Page Hero (`PageHero`)
 The `<PageHero>` component is a high-impact, customizable hero section designed for landing pages and headers. It supports multiple action buttons, alignments, and caption notes.
 
-::page-hero{overline="Feature Highlight" title="Build Stunning Content-Driven Web Apps" description="The ultimate developer-focused toolkit that integrates Nuxt Content, Vuetify, and SEO-best practices out-of-the-box." caption="Completely free and open source." :links='[ { "text": "Get Started", "to": "/", "color": "primary" }, { "text": "Documentation", "href": "https://nuxtify.dev", "color": "secondary", "variant": "outlined", "target": "_blank" } ]' align="center"}
+::page-hero{overline="Feature Highlight" title="Build Stunning Content-Driven Web Apps" titleTag="h2" description="The ultimate developer-focused toolkit that integrates Nuxt Content, Vuetify, and SEO-best practices out-of-the-box." caption="Completely free and open source." :links='[ { "text": "Get Started", "to": "/", "color": "primary" }, { "text": "Documentation", "href": "https://nuxtify.dev", "color": "secondary", "variant": "outlined", "target": "_blank" } ]' align="center"}
 ::
 
 ---

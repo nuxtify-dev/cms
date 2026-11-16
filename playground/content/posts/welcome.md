@@ -7,7 +7,7 @@ topics: ["tips"]
 publishedAt: 2026-05-29T19:10:02Z
 updatedAt: 2026-05-29T19:10:02Z
 sitemap:
-  lastmod:2026-05-29T19:10:02Z
+  lastmod: 2026-05-29T19:10:02Z
 ---
 
 Welcome to the Nuxtify playground! This is a sample article demonstrating how the CMS integration works with Nuxt Content.

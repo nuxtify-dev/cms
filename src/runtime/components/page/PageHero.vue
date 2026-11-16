@@ -8,6 +8,7 @@ import {
 const props = defineProps<{
   overline?: string
   title?: string
+  titleTag?: 'h1' | 'h2'
   description?: string
   caption?: string
   links?: Array<PageLink>
@@ -38,7 +39,8 @@ const { justify, textAlign } = useAlignment(toRef(props, 'align'))
             {{ overline }}
           </slot>
         </div>
-        <h1
+        <component
+          :is="titleTag || 'h1'"
           v-if="title || $slots.title"
           class="text-h4 text-sm-h3 text-md-h2 font-weight-bold"
         >
@@ -48,7 +50,7 @@ const { justify, textAlign } = useAlignment(toRef(props, 'align'))
           >
             {{ title }}
           </slot>
-        </h1>
+        </component>
         <div
           v-if="description || $slots.description"
           class="text-subtitle-1 text-md-h6 text-medium-emphasis mt-2"

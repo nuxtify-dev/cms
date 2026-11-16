@@ -441,3 +441,76 @@ export const buildFaqSchemaNodes = (
     ...cleaned.map(item => wrapQuestion(item)),
   ]
 }
+
+const toIsoDateString = (value?: Date | string): string | undefined => {
+  if (!value) return undefined
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? undefined : value.toISOString()
+  }
+  const trimmed = String(value).trim()
+  return trimmed || undefined
+}
+
+export interface ArticleSeoMetaResult {
+  title?: string
+  description?: string
+  ogType: 'article'
+  articlePublishedTime?: string
+  articleModifiedTime?: string
+  articleTag?: string[]
+  ogImage?: string
+}
+
+export interface ArticleSeoMetaDoc {
+  title?: string
+  description?: string
+  publishedAt?: Date | string
+  updatedAt?: Date | string
+  image?: { src?: string, alt?: string }
+  seo?: Partial<ArticleSeoMetaResult> & Record<string, unknown>
+}
+
+/**
+ * Builds `useSeoMeta` properties for articles and notes with Open Graph article
+ * metadata (`ogType: 'article'`, `articlePublishedTime`, `articleModifiedTime`,
+ * `articleTag`, and `ogImage` fallback) while preserving explicit frontmatter `seo` overrides.
+ */
+export const buildArticleSeoMeta = (
+  doc: ArticleSeoMetaDoc | null | undefined,
+  options: { tags?: string[] } = {},
+): ArticleSeoMetaResult => {
+  if (!doc) {
+    return { ogType: 'article' }
+  }
+
+  const seo = (doc.seo && typeof doc.seo === 'object') ? doc.seo : {}
+  const seoTitle = typeof seo.title === 'string' ? seo.title.trim() : ''
+  const seoDescription = typeof seo.description === 'string' ? seo.description.trim() : ''
+  const title = seoTitle || doc.title?.trim() || undefined
+  const description = seoDescription || doc.description?.trim() || undefined
+  const publishedTime = toIsoDateString(doc.publishedAt)
+  const modifiedTime = toIsoDateString(doc.updatedAt)
+  const fallbackImage = normalizeSchemaImage(doc.image?.src)
+  const seoOgImage = typeof seo.ogImage === 'string' ? seo.ogImage.trim() : ''
+  const tags = options.tags?.map(tag => tag.trim()).filter(Boolean)
+
+  const extraSeo = Object.fromEntries(
+    Object.entries(seo).filter(([key, value]) =>
+      key !== 'title'
+      && key !== 'description'
+      && key !== 'ogImage'
+      && value !== undefined,
+    ),
+  ) as Partial<ArticleSeoMetaResult>
+
+  return {
+    ...extraSeo,
+    ...(title ? { title } : {}),
+    ...(description ? { description } : {}),
+    ogType: 'article',
+    ...(publishedTime ? { articlePublishedTime: publishedTime } : {}),
+    ...(modifiedTime ? { articleModifiedTime: modifiedTime } : {}),
+    ...(tags?.length ? { articleTag: tags } : {}),
+    ...((seoOgImage || fallbackImage) ? { ogImage: seoOgImage || fallbackImage } : {}),
+  }
+}

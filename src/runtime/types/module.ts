@@ -52,6 +52,7 @@ export interface CmsModuleOptions {
     tags?: {
       enabled?: boolean
       prependIcon?: string
+      description?: string
     }
   }
 }

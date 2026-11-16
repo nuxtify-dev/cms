@@ -14,6 +14,7 @@ import {
   useContributor,
   useNuxtifyConfig,
   useArticleSchema,
+  buildArticleSeoMeta,
   normalizePrefix,
 } from '#imports'
 
@@ -55,11 +56,13 @@ if (article.value.topics?.length && article.value.topics[0]) {
   })
 }
 
+const articleKeywords = article.value.topics?.map(topic => titleCase(unslugify(topic)))
+
 // SEO
 // if (article.value?.ogImage?.component) {
 //   defineOgImage({ component: article.value.ogImage.component, ...article.value.ogImage.props })
 // }
-useSeoMeta(article.value.seo || {})
+useSeoMeta(buildArticleSeoMeta(article.value, { tags: articleKeywords }))
 useArticleSchema({
   doc: article,
   author,
@@ -67,7 +70,7 @@ useArticleSchema({
   schemaType: nuxtifyConfig.content?.articles?.schemaType,
   breadcrumbs,
   section: article.value.topics?.[0] ? titleCase(unslugify(article.value.topics[0])) : undefined,
-  keywords: article.value.topics?.map(topic => titleCase(unslugify(topic))),
+  keywords: articleKeywords,
 })
 </script>
 

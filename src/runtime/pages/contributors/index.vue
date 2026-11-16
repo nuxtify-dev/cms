@@ -22,7 +22,7 @@ const subtitle = nuxtifyConfig.content?.contributors?.subtitle ?? ''
 const description = nuxtifyConfig.content?.contributors?.description ?? ''
 useSeoMeta({
   title: subtitle ? `${title} - ${titleCase(subtitle).replace(/\.$/, '')}` : title,
-  description,
+  description: description || subtitle || undefined,
 })
 useContentPageSchema(
   { title, path: contributorsPrefix },

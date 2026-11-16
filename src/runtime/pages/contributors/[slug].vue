@@ -52,16 +52,20 @@ const { data: articles } = await useAsyncData(`articles-by-${slug}`, async () =>
 // if (contributor.value?.ogImage?.component) {
 //   defineOgImage({ component: contributor.value.ogImage.component, ...contributor.value.ogImage.props })
 // }
-useSeoMeta({
-  ...contributor.value.seo,
-  title: `${honoraryName(
-    contributor.value.name,
-    contributor.value.honorificSuffix,
-  )}${contributor.value.jobTitle ? ` - ${contributor.value.jobTitle}` : ''}`,
-})
-const siteUrl = (useSiteConfig().url || '').replace(/\/$/, '')
 const contributorImage = normalizeSchemaImage(contributor.value.image?.src)
 const contributorDescription = stripMarkdown(contributor.value.description) || undefined
+const fallbackSeoTitle = `${honoraryName(
+  contributor.value.name,
+  contributor.value.honorificSuffix,
+)}${contributor.value.jobTitle ? ` - ${contributor.value.jobTitle}` : ''}`
+
+useSeoMeta({
+  ...(contributorImage ? { ogImage: contributorImage } : {}),
+  ...contributor.value.seo,
+  title: contributor.value.seo?.title || fallbackSeoTitle,
+  description: contributor.value.seo?.description || contributorDescription,
+})
+const siteUrl = (useSiteConfig().url || '').replace(/\/$/, '')
 const contributorSocials = (Object.values(contributor.value.socials ?? {}) as (string | undefined)[])
   .filter((value): value is string => Boolean(value?.trim()))
 const contributorsTitle = nuxtifyConfig.content?.contributors?.title ?? 'Contributors'
@@ -237,7 +241,7 @@ useSchemaOrg(mergeSchemaOrgNodes(
       <template v-if="articles?.length">
         <v-divider class="my-12" />
         <h2 class="font-weight-bold mb-6">
-          Articles by {{ contributor.title }}
+          Articles by {{ contributor.name }}
         </h2>
         <ArticleCard
           v-for="(article, index) in articles"
