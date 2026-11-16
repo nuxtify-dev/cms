@@ -54,6 +54,20 @@ export interface CmsModuleOptions {
       prependIcon?: string
       description?: string
     }
+    docs?: {
+      enabled?: boolean
+      routePrefix?: string
+      title?: string
+      description?: string
+      schemaType?: ArticleSchemaType
+      toc?: {
+        enabled?: boolean
+        title?: string
+      }
+      prevNext?: {
+        enabled?: boolean
+      }
+    }
   }
 }
 

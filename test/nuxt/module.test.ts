@@ -14,6 +14,7 @@ interface MockNuxtOptions {
         topics?: { enabled?: boolean }
         contributors?: { enabled?: boolean }
         tags?: { enabled?: boolean }
+        docs?: { enabled?: boolean, routePrefix?: string }
       }
     }
   }
@@ -89,8 +90,11 @@ describe('cms module enabled flags and sitemap exclusions', () => {
     expect(nuxt.options.appConfig.nuxtify?.content?.topics?.enabled).toBe(true)
     expect(nuxt.options.appConfig.nuxtify?.content?.contributors?.enabled).toBe(true)
     expect(nuxt.options.appConfig.nuxtify?.content?.tags?.enabled).toBe(true)
+    expect(nuxt.options.appConfig.nuxtify?.content?.docs?.enabled).toBe(true)
+    expect(nuxt.options.appConfig.nuxtify?.content?.docs?.routePrefix).toBe('/docs')
     expect((nuxt.options.appConfig.nuxtify?.content?.articles as { schemaType?: string } | undefined)?.schemaType).toBe('Article')
     expect((nuxt.options.appConfig.nuxtify?.content?.notes as { schemaType?: string } | undefined)?.schemaType).toBe('BlogPosting')
+    expect((nuxt.options.appConfig.nuxtify?.content?.docs as { schemaType?: string } | undefined)?.schemaType).toBe('TechArticle')
     expect(JSON.stringify(nuxt.options.plugins)).toContain('brandFallback')
 
     expect(nuxt.options.sitemap.exclude).toBeUndefined()
@@ -104,6 +108,42 @@ describe('cms module enabled flags and sitemap exclusions', () => {
     expect(pageNames).toContain('topics-slug')
     expect(pageNames).toContain('contributors')
     expect(pageNames).toContain('contributors-slug')
+    expect(pageNames).toContain('docs')
+  })
+
+  it('excludes docs routes and adds sitemap exclude when docs.enabled is false', async () => {
+    const { nuxt, pages } = createMockNuxt()
+
+    await runModule({
+      content: {
+        docs: {
+          enabled: false,
+          routePrefix: '/handbook',
+        },
+      },
+    }, nuxt as unknown as Nuxt)
+
+    expect(nuxt.options.appConfig.nuxtify?.content?.docs?.enabled).toBe(false)
+    expect(nuxt.options.sitemap.exclude).toContain('/handbook')
+    expect(nuxt.options.sitemap.exclude).toContain('/handbook/**')
+    expect(pages.map(p => p.name)).not.toContain('docs')
+  })
+
+  it('registers custom docs routePrefix before other routes via unshift', async () => {
+    const { nuxt, pages } = createMockNuxt()
+
+    await runModule({
+      content: {
+        docs: {
+          enabled: true,
+          routePrefix: '/handbook',
+        },
+      },
+    }, nuxt as unknown as Nuxt)
+
+    const docsRoute = pages.find(p => p.name === 'docs')
+    expect(docsRoute?.path).toBe('/handbook/:slug(.*)*')
+    expect(pages[0]?.name).toBe('docs')
   })
 
   it('excludes articles routes and adds sitemap exclude when articles.enabled is false', async () => {
@@ -325,5 +365,29 @@ describe('cms module enabled flags and sitemap exclusions', () => {
     }
     afterParseHooks[0]?.({ collection: { name: 'notes' }, content: disabledNote })
     expect(disabledNote.sitemap).toBe(false)
+  })
+
+  it('maps nested docs sitemap locs to custom routePrefix and excludes .navigation items', async () => {
+    const { nuxt, afterParseHooks } = createMockNuxt({ dev: false })
+    await runModule({
+      content: {
+        docs: { routePrefix: '/handbook' },
+      },
+    }, nuxt as unknown as Nuxt)
+
+    const nestedDoc: Record<string, unknown> = {
+      stem: 'docs/1.getting-started/1.introduction',
+      path: '/docs/getting-started/introduction',
+    }
+    afterParseHooks[0]?.({ collection: { name: 'docs' }, content: nestedDoc })
+    expect(nestedDoc.sitemap).toEqual({ loc: '/handbook/getting-started/introduction' })
+
+    const navMeta: Record<string, unknown> = {
+      stem: 'docs/1.getting-started/.navigation',
+      path: '/docs/getting-started/.navigation',
+    }
+    afterParseHooks[0]?.({ collection: { name: 'docs' }, content: navMeta })
+    expect(navMeta.sitemap).toBe(false)
+    expect(navMeta.robots).toBe(false)
   })
 })

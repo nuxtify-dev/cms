@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Article, Contributor } from '../../src/types/content'
+import type { Article, Contributor, Doc } from '../../src/types/content'
 import {
   buildArticleSchemaNodes,
   buildContentPageSchemaNodes,
+  buildDocSchemaNodes,
   buildFaqSchemaNodes,
 } from '../../src/runtime/utils/seo'
 import { useContributor } from '../../src/runtime/composables/useContributor'
@@ -263,6 +264,86 @@ describe('schema composables', () => {
       expect(mockPath).toHaveBeenCalledWith('/team/jane-doe')
       expect(mockWhere).toHaveBeenCalledWith('stem', 'LIKE', '%/jane-doe')
       expect(data.value).toEqual(fallbackContributor)
+    })
+  })
+
+  describe('buildDocSchemaNodes', () => {
+    const createMockDoc = (overrides: Partial<Doc> = {}): Doc => ({
+      id: 'docs/1.getting-started/1.introduction.md',
+      title: 'Introduction',
+      description: 'Get started with **Nuxtify CMS**.',
+      path: '/docs/getting-started/introduction',
+      stem: 'docs/1.getting-started/1.introduction',
+      extension: 'md',
+      meta: {},
+      body: {
+        type: 'minimark',
+        value: [['p', {}, 'One two three four five six.']],
+      },
+      seo: {},
+      robots: {},
+      sitemap: {},
+      ogImage: false,
+      schemaOrg: undefined,
+      toc: true,
+      prevNext: true,
+      draft: false,
+      ...overrides,
+    } as Doc)
+
+    it('emits TechArticle and BreadcrumbList without requiring publishedAt or author', () => {
+      const nodes = buildDocSchemaNodes({
+        doc: createMockDoc(),
+        section: 'Get Started',
+        breadcrumbs: [
+          { title: 'Get Started', to: '/docs/getting-started/introduction' },
+        ],
+      })
+
+      expect(nodes).toHaveLength(2)
+      expect(nodes[0]).toMatchObject({
+        '@type': 'TechArticle',
+        'headline': 'Introduction',
+        'description': 'Get started with Nuxtify CMS.',
+        'articleSection': 'Get Started',
+        'wordCount': 6,
+      })
+      expect(nodes[0]).not.toHaveProperty('datePublished')
+      expect(nodes[0]).not.toHaveProperty('author')
+      expect(nodes[1]).toMatchObject({
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { name: 'Get Started', item: '/docs/getting-started/introduction' },
+          { name: 'Introduction', item: '/docs/getting-started/introduction' },
+        ],
+      })
+    })
+
+    it('respects explicit frontmatter schemaType, dates, and custom public path', () => {
+      const nodes = buildDocSchemaNodes({
+        doc: createMockDoc({
+          schemaType: 'Article',
+          publishedAt: '2026-03-01',
+          updatedAt: '2026-03-10',
+        }),
+        path: '/guide/getting-started/introduction',
+        breadcrumbs: [
+          { title: 'Guide', to: '/guide' },
+        ],
+      })
+
+      expect(nodes[0]).toMatchObject({
+        '@type': 'Article',
+        'datePublished': '2026-03-01',
+        'dateModified': '2026-03-10',
+      })
+      expect(nodes[1]).toMatchObject({
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { name: 'Guide', item: '/guide' },
+          { name: 'Introduction', item: '/guide/getting-started/introduction' },
+        ],
+      })
     })
   })
 })

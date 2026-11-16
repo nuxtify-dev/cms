@@ -82,3 +82,14 @@ export const noteSchema = z.object({
   tags: z.array(z.string()).default([]).optional(),
   schemaType: articleSchemaTypeEnum.optional(),
 }).merge(seoSchema)
+
+export const docSchema = z.object({
+  icon: z.string().optional(),
+  publishedAt: z.union([z.string(), z.date()]).optional(),
+  updatedAt: z.union([z.string(), z.date()]).optional(),
+  image: imageSchema.optional(),
+  toc: z.boolean().default(true),
+  prevNext: z.boolean().default(true),
+  draft: z.boolean().default(false),
+  schemaType: articleSchemaTypeEnum.optional(),
+}).merge(seoSchema)

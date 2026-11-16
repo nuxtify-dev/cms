@@ -7,6 +7,7 @@ import type {
   articleSchema,
   topicSchema,
   noteSchema,
+  docSchema,
 } from '../runtime/utils/contentSchemas'
 
 export type Image = z.infer<typeof imageSchema>
@@ -32,6 +33,12 @@ export interface Note extends PageCollectionItemBase, Omit<z.infer<typeof noteSc
   draft?: boolean
 }
 
+export interface Doc extends PageCollectionItemBase, Omit<z.infer<typeof docSchema>, 'draft' | 'toc' | 'prevNext'> {
+  draft?: boolean
+  toc?: boolean
+  prevNext?: boolean
+}
+
 declare module '@nuxt/content' {
   interface Collections {
     pages: Page
@@ -39,5 +46,15 @@ declare module '@nuxt/content' {
     articles: Article
     topics: Topic
     notes: Note
+    docs: Doc
+  }
+
+  interface PageCollections {
+    pages: Page
+    contributors: Contributor
+    articles: Article
+    topics: Topic
+    notes: Note
+    docs: Doc
   }
 }

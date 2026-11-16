@@ -1,5 +1,5 @@
 import { toValue, type MaybeRefOrGetter } from 'vue'
-import type { Article, Contributor, Note } from '../../types/content'
+import type { Article, Contributor, Doc, Note } from '../../types/content'
 import type { BreadcrumbItem } from '../../types/link'
 import type { ArticleSchemaType } from '../types/module'
 import { normalizePrefix } from './routes'
@@ -321,6 +321,67 @@ const buildAuthorUrl = (
   return `${baseUrl}${contributorsPrefix}/${authorSlug}`
 }
 
+interface SharedArticleSchemaInput {
+  schemaType: ArticleSchemaType
+  headline?: string
+  rawDescription?: string
+  imageSrc?: string
+  publishedAt?: string | Date
+  updatedAt?: string | Date
+  authors?: Record<string, unknown>[]
+  section?: string
+  keywords?: string[]
+  explicitWordCount?: number
+  body: unknown
+  breadcrumbs: BreadcrumbItem[]
+  breadcrumbTitle?: string
+  currentPath?: string
+  schemaOrg: unknown
+}
+
+const assembleArticleSchemaNodes = (
+  input: SharedArticleSchemaInput,
+  resolvers: ArticleSchemaResolvers,
+): Record<string, unknown>[] => {
+  const wrapArticle = resolvers.article ?? (node => node)
+  const wrapBreadcrumb = resolvers.breadcrumb ?? (node => ({ '@type': 'BreadcrumbList', ...node }))
+
+  const description = stripMarkdown(input.rawDescription) || undefined
+  const image = normalizeSchemaImage(input.imageSrc)
+  const section = input.section?.trim() || undefined
+  const keywords = (input.keywords || []).map(k => k.trim()).filter(Boolean)
+  const computedWordCount = input.explicitWordCount ?? countDocumentWords(input.body)
+  const wordCount = typeof computedWordCount === 'number' && computedWordCount > 0
+    ? computedWordCount
+    : undefined
+
+  const breadcrumbItems = input.breadcrumbTitle
+    ? getBreadcrumbsSchema(input.breadcrumbs, { title: input.breadcrumbTitle, to: input.currentPath })
+    : []
+  const breadcrumbNode = breadcrumbItems.length >= 2
+    ? wrapBreadcrumb({ itemListElement: breadcrumbItems })
+    : undefined
+
+  const articleNode = wrapArticle({
+    '@type': input.schemaType,
+    ...(input.publishedAt ? { datePublished: input.publishedAt } : {}),
+    ...(input.updatedAt ? { dateModified: input.updatedAt } : {}),
+    ...(input.headline ? { headline: input.headline } : {}),
+    ...(description ? { description } : {}),
+    ...(image ? { image } : {}),
+    ...(input.authors?.length ? { author: input.authors } : {}),
+    ...(section ? { articleSection: section } : {}),
+    ...(keywords.length > 0 ? { keywords } : {}),
+    ...(wordCount ? { wordCount } : {}),
+  })
+
+  return mergeSchemaOrgNodes(
+    input.schemaOrg,
+    [articleNode],
+    breadcrumbNode,
+  )
+}
+
 /**
  * Builds Schema.org nodes (`Article`/`BlogPosting` + optional `BreadcrumbList`)
  * for articles and notes, avoiding empty placeholder values (`""`, `[]`).
@@ -332,17 +393,12 @@ export const buildArticleSchemaNodes = (
   const doc = toValue(options.doc)
   if (!doc) return []
 
-  const wrapArticle = resolvers.article ?? (node => node)
-  const wrapBreadcrumb = resolvers.breadcrumb ?? (node => ({ '@type': 'BreadcrumbList', ...node }))
-
   const author = toValue(options.author)
   const authorSlug = toValue(options.authorSlug) ?? doc.author
   const schemaType = doc.schemaType ?? toValue(options.schemaType) ?? 'BlogPosting'
   const headline = doc.seo?.title ?? doc.title ?? undefined
   const summary = 'summary' in doc ? doc.summary : undefined
   const rawDescription = doc.seo?.description ?? summary ?? doc.description ?? undefined
-  const description = stripMarkdown(rawDescription) || undefined
-  const image = normalizeSchemaImage(doc.image?.src)
 
   const contributorsPrefix = normalizePrefix(toValue(options.contributorsPrefix), '/contributors')
   const contributorsEnabled = toValue(options.contributorsEnabled) !== false
@@ -360,40 +416,75 @@ export const buildArticleSchemaNodes = (
       }
     : undefined
 
-  const keywords = (toValue(options.keywords) || []).map(k => k.trim()).filter(Boolean)
-  const section = toValue(options.section)?.trim() || undefined
-  const explicitWordCount = toValue(options.wordCount)
-  const computedWordCount = explicitWordCount ?? countDocumentWords(doc.body)
-  const wordCount = typeof computedWordCount === 'number' && computedWordCount > 0
-    ? computedWordCount
-    : undefined
+  return assembleArticleSchemaNodes(
+    {
+      schemaType,
+      headline,
+      rawDescription,
+      imageSrc: doc.image?.src,
+      publishedAt: doc.publishedAt,
+      updatedAt: doc.updatedAt,
+      authors: personNode ? [personNode] : undefined,
+      section: toValue(options.section),
+      keywords: toValue(options.keywords),
+      explicitWordCount: toValue(options.wordCount),
+      body: doc.body,
+      breadcrumbs: toValue(options.breadcrumbs) || [],
+      breadcrumbTitle: headline ?? doc.title,
+      currentPath: doc.path,
+      schemaOrg: doc.schemaOrg,
+    },
+    resolvers,
+  )
+}
 
-  const breadcrumbs = toValue(options.breadcrumbs) || []
-  const breadcrumbTitle = headline ?? doc.title
-  const breadcrumbItems = breadcrumbTitle
-    ? getBreadcrumbsSchema(breadcrumbs, { title: breadcrumbTitle, to: doc.path })
-    : []
-  const breadcrumbNode = breadcrumbItems.length >= 2
-    ? wrapBreadcrumb({ itemListElement: breadcrumbItems })
-    : undefined
+export interface DocSchemaOptions {
+  /** Documentation page item */
+  doc: MaybeRefOrGetter<Doc | null | undefined>
+  /** Module-level default `@type` when frontmatter `schemaType` is not set (defaults to `'TechArticle'`) */
+  schemaType?: MaybeRefOrGetter<ArticleSchemaType | undefined>
+  /** Parent UI breadcrumb items; the current doc is appended automatically */
+  breadcrumbs?: MaybeRefOrGetter<BreadcrumbItem[] | undefined>
+  /** Primary category/section name */
+  section?: MaybeRefOrGetter<string | undefined>
+  /** Explicit public path override for breadcrumbs when `routePrefix` is customized */
+  path?: MaybeRefOrGetter<string | undefined>
+  /** Explicit word count override (computed from `doc.body` when omitted) */
+  wordCount?: MaybeRefOrGetter<number | undefined>
+}
 
-  const articleNode = wrapArticle({
-    '@type': schemaType,
-    'datePublished': doc.publishedAt,
-    ...(doc.updatedAt ? { dateModified: doc.updatedAt } : {}),
-    ...(headline ? { headline } : {}),
-    ...(description ? { description } : {}),
-    ...(image ? { image } : {}),
-    ...(personNode ? { author: [personNode] } : {}),
-    ...(section ? { articleSection: section } : {}),
-    ...(keywords.length > 0 ? { keywords } : {}),
-    ...(wordCount ? { wordCount } : {}),
-  })
+/**
+ * Builds Schema.org nodes (`TechArticle` by default + optional `BreadcrumbList`)
+ * for documentation pages without requiring `publishedAt` or `author`.
+ */
+export const buildDocSchemaNodes = (
+  options: DocSchemaOptions,
+  resolvers: ArticleSchemaResolvers = {},
+): Record<string, unknown>[] => {
+  const doc = toValue(options.doc)
+  if (!doc) return []
 
-  return mergeSchemaOrgNodes(
-    doc.schemaOrg,
-    [articleNode],
-    breadcrumbNode,
+  const schemaType = doc.schemaType ?? toValue(options.schemaType) ?? 'TechArticle'
+  const headline = doc.seo?.title ?? doc.title ?? undefined
+  const rawDescription = doc.seo?.description ?? doc.description ?? undefined
+
+  return assembleArticleSchemaNodes(
+    {
+      schemaType,
+      headline,
+      rawDescription,
+      imageSrc: doc.image?.src,
+      publishedAt: doc.publishedAt,
+      updatedAt: doc.updatedAt,
+      section: toValue(options.section),
+      explicitWordCount: toValue(options.wordCount),
+      body: doc.body,
+      breadcrumbs: toValue(options.breadcrumbs) || [],
+      breadcrumbTitle: doc.title ?? headline,
+      currentPath: toValue(options.path) ?? doc.path,
+      schemaOrg: doc.schemaOrg,
+    },
+    resolvers,
   )
 }
 

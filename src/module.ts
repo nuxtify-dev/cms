@@ -90,6 +90,20 @@ export default defineNuxtModule<ModuleOptions>().with({
         prependIcon: '',
         description: '',
       },
+      docs: {
+        enabled: true,
+        routePrefix: '/docs',
+        title: 'Docs',
+        description: '',
+        schemaType: 'TechArticle',
+        toc: {
+          enabled: true,
+          title: 'On this page',
+        },
+        prevNext: {
+          enabled: true,
+        },
+      },
     },
   },
   setup(_options, _nuxt) {
@@ -99,12 +113,14 @@ export default defineNuxtModule<ModuleOptions>().with({
     const notesPrefix = normalizePrefix(_options.content?.notes?.routePrefix, '/notes')
     const topicsPrefix = normalizePrefix(_options.content?.topics?.routePrefix, '/topics')
     const contributorsPrefix = normalizePrefix(_options.content?.contributors?.routePrefix, '/contributors')
+    const docsPrefix = normalizePrefix(_options.content?.docs?.routePrefix, '/docs')
 
     const articlesEnabled = _options.content?.articles?.enabled !== false
     const notesEnabled = _options.content?.notes?.enabled !== false
     const topicsEnabled = _options.content?.topics?.enabled !== false
     const contributorsEnabled = _options.content?.contributors?.enabled !== false
     const tagsEnabled = _options.content?.tags?.enabled !== false && notesEnabled
+    const docsEnabled = _options.content?.docs?.enabled !== false
 
     // Expose module options to app config with normalized route prefixes
     _nuxt.options.appConfig.nuxtify = defu(
@@ -137,6 +153,11 @@ export default defineNuxtModule<ModuleOptions>().with({
             ..._options.content?.tags,
             enabled: tagsEnabled,
           },
+          docs: {
+            ..._options.content?.docs,
+            enabled: docsEnabled,
+            routePrefix: docsPrefix,
+          },
         },
       },
     ) as ModuleOptions
@@ -157,6 +178,9 @@ export default defineNuxtModule<ModuleOptions>().with({
     }
     if (!tagsEnabled) {
       sitemapExcludes.push('/tags', '/tags/**')
+    }
+    if (!docsEnabled) {
+      sitemapExcludes.push(docsPrefix, `${docsPrefix}/**`)
     }
 
     if (sitemapExcludes.length > 0) {
@@ -184,6 +208,7 @@ export default defineNuxtModule<ModuleOptions>().with({
           notes: { enabled: notesEnabled, routePrefix: notesPrefix },
           topics: { enabled: topicsEnabled, routePrefix: topicsPrefix },
           contributors: { enabled: contributorsEnabled, routePrefix: contributorsPrefix },
+          docs: { enabled: docsEnabled, routePrefix: docsPrefix },
         },
       })
     })
@@ -276,6 +301,14 @@ export default defineNuxtModule<ModuleOptions>().with({
           name: 'contributors-slug',
           path: `${contributorsPrefix}/:slug`,
           file: resolve('./runtime/pages/contributors/[slug].vue'),
+        })
+      }
+
+      if (docsEnabled) {
+        pages.unshift({
+          name: 'docs',
+          path: `${docsPrefix}/:slug(.*)*`,
+          file: resolve('./runtime/pages/docs/[...slug].vue'),
         })
       }
     })

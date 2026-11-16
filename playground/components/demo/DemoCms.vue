@@ -6,6 +6,7 @@ import {
   unslugify,
   slugify,
   titleCase,
+  toDocsPublicPath,
   computed,
 } from '#imports'
 
@@ -17,11 +18,13 @@ const notesEnabled = computed(() => nuxtifyConfig.content?.notes?.enabled !== fa
 const topicsEnabled = computed(() => nuxtifyConfig.content?.topics?.enabled !== false)
 const contributorsEnabled = computed(() => nuxtifyConfig.content?.contributors?.enabled !== false)
 const tagsEnabled = computed(() => nuxtifyConfig.content?.tags?.enabled !== false && notesEnabled.value)
+const docsEnabled = computed(() => nuxtifyConfig.content?.docs?.enabled !== false)
 
 const articlesPrefix = computed(() => nuxtifyConfig.content?.articles?.routePrefix || '/articles')
 const notesPrefix = computed(() => nuxtifyConfig.content?.notes?.routePrefix || '/notes')
 const topicsPrefix = computed(() => nuxtifyConfig.content?.topics?.routePrefix || '/topics')
 const contributorsPrefix = computed(() => nuxtifyConfig.content?.contributors?.routePrefix || '/contributors')
+const docsPrefix = computed(() => nuxtifyConfig.content?.docs?.routePrefix || '/docs')
 
 // FETCH LIVE CONTENT DATA
 const { data: articles } = await useAsyncData('demo-cms-articles', () => {
@@ -46,6 +49,12 @@ const { data: contributors } = await useAsyncData('demo-cms-contributors', () =>
 const { data: topics } = await useAsyncData('demo-cms-topics', () => {
   if (!topicsEnabled.value) return Promise.resolve([])
   return usePublicCollection('topics').all()
+})
+
+const { data: docs } = await useAsyncData('demo-cms-docs', async () => {
+  if (!docsEnabled.value) return []
+  const items = await usePublicCollection('docs').all()
+  return items.filter(item => !item.stem?.endsWith('/.navigation') && item.stem !== '.navigation')
 })
 
 // EXTRACT ACTIVE TAGS FROM NOTES
@@ -548,6 +557,68 @@ export default defineContentConfig({
                   :prepend-icon="tagPrependIcon"
                 >
                   {{ titleCase(tag) }}
+                </v-chip>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <!-- Row 3: Documentation Showcase -->
+        <v-row
+          v-if="docsEnabled"
+          class="mt-6"
+        >
+          <v-col cols="12">
+            <v-card
+              class="pa-6 border"
+              variant="outlined"
+            >
+              <div class="d-flex justify-space-between align-center mb-4">
+                <div class="d-flex align-center">
+                  <v-icon
+                    icon="mdi-book-open-page-variant-outline"
+                    class="mr-2"
+                  />
+                  <h3 class="text-subtitle-1 font-weight-bold">
+                    Documentation
+                  </h3>
+                </div>
+                <v-btn
+                  size="small"
+                  color="secondary"
+                  variant="text"
+                  :to="docsPrefix"
+                  append-icon="mdi-arrow-right"
+                  class="text-none"
+                >
+                  Open Docs
+                </v-btn>
+              </div>
+
+              <p class="text-body-2 text-medium-emphasis mb-4">
+                Hierarchical docs with top category tabs, collapsible sidebar sections, sticky table of contents, and prev/next navigation.
+              </p>
+
+              <div
+                v-if="!docs || docs.length === 0"
+                class="py-4 text-center text-medium-emphasis"
+              >
+                No documentation pages found in <code>content/docs/</code>.
+              </div>
+              <div
+                v-else
+                class="d-flex flex-wrap ga-2"
+              >
+                <v-chip
+                  v-for="docItem in docs.slice(0, 6)"
+                  :key="docItem.path"
+                  color="secondary"
+                  variant="tonal"
+                  link
+                  :to="toDocsPublicPath(docItem.path, docsPrefix)"
+                  :prepend-icon="docItem.icon || 'mdi-file-document-outline'"
+                >
+                  {{ docItem.title }}
                 </v-chip>
               </div>
             </v-card>

@@ -3,6 +3,8 @@ import {
   normalizePrefix,
   extractSlug,
   getContentItemLink,
+  getDocsItemLink,
+  isNavigationMetaItem,
 } from '../../src/runtime/utils/routes'
 
 describe('routes utilities', () => {
@@ -60,6 +62,31 @@ describe('routes utilities', () => {
     it('falls back to prefix if no slug is extractable', () => {
       expect(getContentItemLink('/essays', '')).toBe('/essays')
       expect(getContentItemLink('essays', undefined)).toBe('/essays')
+    })
+  })
+
+  describe('getDocsItemLink', () => {
+    it('preserves nested hierarchy under configured prefix and strips ordering prefixes', () => {
+      expect(getDocsItemLink('/docs', { path: '/docs/getting-started/introduction', stem: 'docs/1.getting-started/1.introduction' }))
+        .toBe('/docs/getting-started/introduction')
+      expect(getDocsItemLink('/guide', { path: '/docs/getting-started/introduction', stem: 'docs/1.getting-started/1.introduction' }))
+        .toBe('/guide/getting-started/introduction')
+      expect(getDocsItemLink('guide/', { stem: 'docs/2.api/1.composables' }))
+        .toBe('/guide/api/composables')
+      expect(getDocsItemLink('/developer/docs', { path: '/developer/docs/getting-started/intro' }))
+        .toBe('/developer/docs/getting-started/intro')
+      expect(getDocsItemLink('/guide', { path: '/docs', stem: 'docs/index' }))
+        .toBe('/guide')
+    })
+  })
+
+  describe('isNavigationMetaItem', () => {
+    it('identifies .navigation metadata files across root and subdirectories', () => {
+      expect(isNavigationMetaItem({ stem: 'docs/.navigation' })).toBe(true)
+      expect(isNavigationMetaItem({ stem: 'docs/1.getting-started/.navigation' })).toBe(true)
+      expect(isNavigationMetaItem({ stem: '.navigation' })).toBe(true)
+      expect(isNavigationMetaItem({ path: '/docs/getting-started/.navigation' })).toBe(true)
+      expect(isNavigationMetaItem({ stem: 'docs/1.getting-started/1.introduction', path: '/docs/getting-started/introduction' })).toBe(false)
     })
   })
 })

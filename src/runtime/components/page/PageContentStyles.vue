@@ -56,16 +56,19 @@
   font-size: 1.75rem;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+  scroll-margin-top: calc(var(--v-layout-top, 64px) + var(--docs-sticky-offset, 1.5rem));
 }
 :deep(h3) {
   font-size: 1.5rem;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+  scroll-margin-top: calc(var(--v-layout-top, 64px) + var(--docs-sticky-offset, 1.5rem));
 }
 :deep(h4) {
   color: #616161;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+  scroll-margin-top: calc(var(--v-layout-top, 64px) + var(--docs-sticky-offset, 1.5rem));
 }
 :deep(h6) {
   color: #616161;

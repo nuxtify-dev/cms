@@ -52,6 +52,7 @@ The module automatically registers dynamic pages using `extendPages` in `src/mod
 - `/topics/:slug` &rarr; `runtime/pages/topics/[slug].vue`
 - `/contributors` &rarr; `runtime/pages/contributors/index.vue`
 - `/contributors/:slug` &rarr; `runtime/pages/contributors/[slug].vue`
+- `/docs/:slug*` &rarr; `runtime/pages/docs/[...slug].vue`
 
 ---
 
@@ -81,7 +82,7 @@ The key commands specified in `package.json` are:
 ## Core Composables & Schemas
 
 ### 1. `usePublicCollection<T>(collection)`
-Located in `src/runtime/composables/usePublicCollection.ts`, this wraps `@nuxt/content`'s `queryCollection(collection)` and filters out draft content when running in production (`import.meta.env.PROD`), guaranteeing draft articles are not exposed to public users.
+Located in `src/runtime/composables/usePublicCollection.ts`, this wraps `@nuxt/content`'s `queryCollection(collection)` and filters out draft content when running in production (`import.meta.env.PROD`), guaranteeing draft articles are not exposed to public users. Similarly, `usePublicCollectionNavigation` and `usePublicCollectionSurroundings` wrap `@nuxt/content`'s navigation and surroundings queries with production draft filtering.
 
 ### 2. Content Schemas
 Schemas are built with Zod in `src/runtime/utils/contentSchemas.ts` merging standard SEO settings (`defineRobotsSchema`, `defineSitemapSchema`, `defineSchemaOrgSchema`):
@@ -89,3 +90,5 @@ Schemas are built with Zod in `src/runtime/utils/contentSchemas.ts` merging stan
 - `contributorSchema`
 - `articleSchema`
 - `topicSchema`
+- `noteSchema`
+- `docSchema`

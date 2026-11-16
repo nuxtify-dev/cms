@@ -60,6 +60,12 @@ export default defineAppConfig({
               icon: 'mdi-view-dashboard-outline',
               to: '/demo-components',
             },
+            {
+              text: 'Documentation',
+              description: 'Browse hierarchical docs with category tabs, sidebar, and TOC.',
+              icon: 'mdi-book-open-page-variant-outline',
+              to: '/docs',
+            },
           ],
         },
         { text: 'Pages Features', to: '/pages-features' },
@@ -116,6 +122,7 @@ export default defineAppConfig({
         {
           title: 'CMS',
           links: [
+            { text: 'Docs', to: '/docs' },
             { text: 'Articles', to: '/posts' },
             { text: 'Notes', to: '/notes' },
             { text: 'Topics', to: '/topics' },
