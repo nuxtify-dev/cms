@@ -79,6 +79,9 @@ describe('cms module enabled flags and sitemap exclusions', () => {
     expect(nuxt.options.appConfig.nuxtify?.content?.topics?.enabled).toBe(true)
     expect(nuxt.options.appConfig.nuxtify?.content?.contributors?.enabled).toBe(true)
     expect(nuxt.options.appConfig.nuxtify?.content?.tags?.enabled).toBe(true)
+    expect((nuxt.options.appConfig.nuxtify?.content?.articles as { schemaType?: string } | undefined)?.schemaType).toBe('Article')
+    expect((nuxt.options.appConfig.nuxtify?.content?.notes as { schemaType?: string } | undefined)?.schemaType).toBe('BlogPosting')
+    expect(JSON.stringify(nuxt.options.plugins)).toContain('brandFallback')
 
     expect(nuxt.options.sitemap.exclude).toBeUndefined()
     const pageNames = pages.map(p => p.name)

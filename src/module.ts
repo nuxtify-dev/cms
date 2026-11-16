@@ -1,6 +1,7 @@
 import {
   addComponentsDir,
   addImportsDir,
+  addPlugin,
   createResolver,
   defineNuxtModule,
   extendPages,
@@ -12,7 +13,7 @@ import { normalizePrefix } from './runtime/utils/routes'
 // Types
 import type { ModuleOptions } from './types/module'
 
-export type { CmsModuleOptions, Link, ModuleOptions, NavigationItem, PageModuleOptions, TitledLinks } from './types/module'
+export type { ArticleSchemaType, CmsModuleOptions, Link, ModuleOptions, NavigationItem, PageModuleOptions, TitledLinks } from './types/module'
 
 export default defineNuxtModule<ModuleOptions>().with({
   meta: {
@@ -55,6 +56,7 @@ export default defineNuxtModule<ModuleOptions>().with({
         title: 'Articles',
         subtitle: 'Long, in-depth posts.',
         description: '',
+        schemaType: 'Article',
         readTime: {
           enabled: true,
           // Same as Ghost: https://docs.ghost.org/themes/helpers/utility/reading_time
@@ -67,6 +69,7 @@ export default defineNuxtModule<ModuleOptions>().with({
         title: 'Notes',
         subtitle: 'Short updates, thoughts, and links.',
         description: '',
+        schemaType: 'BlogPosting',
       },
       topics: {
         enabled: true,
@@ -193,6 +196,9 @@ export default defineNuxtModule<ModuleOptions>().with({
 
     // Utils
     addImportsDir(resolve('./runtime/utils'))
+
+    // Plugins
+    addPlugin(resolve('./runtime/plugins/brandFallback'))
 
     // Pages
     extendPages((pages) => {

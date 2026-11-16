@@ -4,13 +4,17 @@ import {
   usePublicCollection,
   useSeoMeta,
   useSchemaOrg,
+  defineBreadcrumb,
   defineWebPage,
   useAsyncData,
   useRoute,
   createError,
+  getBreadcrumbsSchema,
   honoraryName,
   definePerson,
-  slugify,
+  mergeSchemaOrgNodes,
+  normalizeSchemaImage,
+  stripMarkdown,
   useSiteConfig,
   useNuxtifyConfig,
   normalizePrefix,
@@ -55,26 +59,41 @@ useSeoMeta({
     contributor.value.honorificSuffix,
   )}${contributor.value.jobTitle ? ` - ${contributor.value.jobTitle}` : ''}`,
 })
-useSchemaOrg(contributor.value.schemaOrg || [
-  defineWebPage({
-    '@type': 'ProfilePage',
-    'mainEntity': definePerson({
-      identifier: slugify(contributor.value.name),
-      name: honoraryName(
-        contributor.value.name,
-        contributor.value.honorificSuffix,
-      ),
-      description: contributor.value.description,
-      image: contributor.value.image?.src ?? '',
-      url: `${useSiteConfig().url}${contributorsPrefix}/${
-        slugify(contributor.value.name)
-      }`,
-      jobTitle: contributor.value.jobTitle ?? '',
-      honorificSuffix: contributor.value.honorificSuffix ?? '',
-      sameAs: Object.values(contributor.value.socials ?? []).filter(Boolean), // Remove false, 0, "", null, undefined, and NaN values
+const siteUrl = (useSiteConfig().url || '').replace(/\/$/, '')
+const contributorImage = normalizeSchemaImage(contributor.value.image?.src)
+const contributorDescription = stripMarkdown(contributor.value.description) || undefined
+const contributorSocials = (Object.values(contributor.value.socials ?? {}) as (string | undefined)[])
+  .filter((value): value is string => Boolean(value?.trim()))
+const contributorsTitle = nuxtifyConfig.content?.contributors?.title ?? 'Contributors'
+const breadcrumbItems = getBreadcrumbsSchema(
+  [
+    { title: 'Home', to: '/' },
+    { title: contributorsTitle, to: contributorsPrefix },
+  ],
+  { title: contributor.value.name, to: `${contributorsPrefix}/${slug}` },
+)
+
+useSchemaOrg(mergeSchemaOrgNodes(
+  contributor.value.schemaOrg,
+  [
+    defineWebPage({
+      '@type': 'ProfilePage',
+      'mainEntity': definePerson({
+        identifier: slug,
+        name: contributor.value.name,
+        ...(contributorDescription ? { description: contributorDescription } : {}),
+        ...(contributorImage ? { image: contributorImage } : {}),
+        url: `${siteUrl}${contributorsPrefix}/${slug}`,
+        ...(contributor.value.jobTitle ? { jobTitle: contributor.value.jobTitle } : {}),
+        ...(contributor.value.honorificSuffix ? { honorificSuffix: contributor.value.honorificSuffix } : {}),
+        ...(contributorSocials.length > 0 ? { sameAs: contributorSocials } : {}),
+      }),
     }),
-  }),
-])
+  ],
+  breadcrumbItems.length >= 2
+    ? defineBreadcrumb({ itemListElement: breadcrumbItems })
+    : undefined,
+))
 </script>
 
 <template>

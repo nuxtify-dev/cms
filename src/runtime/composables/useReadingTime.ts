@@ -1,4 +1,5 @@
 import type { Article } from '../../types/content'
+import { countDocumentWords } from '../utils/seo'
 import {
   computed,
   toValue,
@@ -6,44 +7,6 @@ import {
   type ComputedRef,
   type MaybeRefOrGetter,
 } from '#imports'
-
-function extractText(node: unknown): string {
-  if (!node) return ''
-  if (typeof node === 'string') return node
-  if (typeof node === 'number') return String(node)
-
-  if (Array.isArray(node)) {
-    // Check if it's a minimark AST node: [tag: string, props: object, ...children]
-    if (
-      typeof node[0] === 'string'
-      && node.length >= 2
-      && typeof node[1] === 'object'
-      && !Array.isArray(node[1])
-    ) {
-      return node.slice(2).map(extractText).join(' ')
-    }
-    return node.map(extractText).join(' ')
-  }
-
-  if (typeof node === 'object') {
-    const record = node as Record<string, unknown>
-    if (typeof record.value === 'string') {
-      return record.value
-    }
-    if (Array.isArray(record.value)) {
-      return record.value.map(extractText).join(' ')
-    }
-    if (Array.isArray(record.children)) {
-      return record.children.map(extractText).join(' ')
-    }
-  }
-  return ''
-}
-
-function countWords(text: string): number {
-  const matches = text.trim().match(/\S+/g)
-  return matches ? matches.length : 0
-}
 
 export function useReadingTime(
   article: MaybeRefOrGetter<Article | null | undefined>,
@@ -69,8 +32,7 @@ export function useReadingTime(
       return undefined
     }
 
-    const text = extractText(currentArticle.body)
-    const words = countWords(text)
+    const words = countDocumentWords(currentArticle.body)
     if (words === 0) {
       return undefined
     }

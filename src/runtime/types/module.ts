@@ -1,4 +1,7 @@
 import type { ModuleOptions as PagesModuleOptions } from '@nuxtify/pages'
+import type { ArticleSchemaType } from '../utils/contentSchemas'
+
+export type { ArticleSchemaType }
 
 export interface CmsModuleOptions {
   /**
@@ -18,6 +21,7 @@ export interface CmsModuleOptions {
       title?: string
       subtitle?: string
       description?: string
+      schemaType?: ArticleSchemaType
       readTime?: {
         enabled?: boolean
         wordsPerMinute?: number
@@ -29,6 +33,7 @@ export interface CmsModuleOptions {
       title?: string
       subtitle?: string
       description?: string
+      schemaType?: ArticleSchemaType
     }
     topics?: {
       enabled?: boolean

@@ -6,15 +6,13 @@ import {
   useAsyncData,
   usePublicCollection,
   useSeoMeta,
-  useSchemaOrg,
   createError,
   ref,
-  getBreadcrumbsSchema,
-  defineArticle,
-  defineBreadcrumb,
-  useSiteConfig,
+  titleCase,
+  unslugify,
   useContributor,
   useNuxtifyConfig,
+  useArticleSchema,
   normalizePrefix,
 } from '#imports'
 
@@ -22,8 +20,6 @@ const nuxtifyConfig = useNuxtifyConfig()
 const route = useRoute()
 const slug = route.params.slug as string
 const notesPrefix = normalizePrefix(nuxtifyConfig.content?.notes?.routePrefix, '/notes')
-const contributorsPrefix = normalizePrefix(nuxtifyConfig.content?.contributors?.routePrefix, '/contributors')
-const contributorsEnabled = nuxtifyConfig.content?.contributors?.enabled !== false
 
 // Fetch note
 const { data: note } = await useAsyncData(`note-${route.path}`, async () => {
@@ -63,30 +59,15 @@ useSeoMeta(note.value.seo || {
 })
 
 // Schema.org
-const siteConfig = useSiteConfig()
-useSchemaOrg(note.value.schemaOrg || [
-  defineArticle({
-    '@type': 'BlogPosting',
-    'dateModified': note.value.updatedAt ?? '',
-    'datePublished': note.value.publishedAt,
-    'headline': seoTitle,
-    'image': note.value.image?.src ?? '',
-    'author': author.value
-      ? [
-          {
-            '@type': 'Person',
-            'name': author.value.name,
-            ...(contributorsEnabled ? { url: `${siteConfig.url}${contributorsPrefix}/${note.value.author}` } : {}),
-            'jobTitle': author.value.jobTitle ?? '',
-            'honorificSuffix': author.value.honorificSuffix ?? '',
-          },
-        ]
-      : [],
-  }),
-  defineBreadcrumb({
-    itemListElement: getBreadcrumbsSchema(breadcrumbs.value),
-  }),
-])
+useArticleSchema({
+  doc: note,
+  author,
+  authorSlug: note.value.author,
+  schemaType: nuxtifyConfig.content?.notes?.schemaType,
+  breadcrumbs,
+  section: note.value.tags?.[0] ? titleCase(unslugify(note.value.tags[0])) : undefined,
+  keywords: note.value.tags?.map(tag => titleCase(unslugify(tag))),
+})
 </script>
 
 <template>

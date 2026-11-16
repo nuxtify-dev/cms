@@ -1,2 +1,2 @@
 export type { Link, NavigationItem, PageModuleOptions, TitledLinks } from '@nuxtify/pages'
-export type { CmsModuleOptions, ModuleOptions } from '../runtime/types/module'
+export type { ArticleSchemaType, CmsModuleOptions, ModuleOptions } from '../runtime/types/module'

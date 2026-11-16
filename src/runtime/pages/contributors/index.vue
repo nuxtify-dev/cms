@@ -3,10 +3,9 @@
 import {
   usePublicCollection,
   useSeoMeta,
-  useSchemaOrg,
+  useContentPageSchema,
   useNuxtifyConfig,
   titleCase,
-  defineWebPage,
   useAsyncData,
   getContentItemLink,
   normalizePrefix,
@@ -25,13 +24,15 @@ useSeoMeta({
   title: subtitle ? `${title} - ${titleCase(subtitle).replace(/\.$/, '')}` : title,
   description,
 })
-useSchemaOrg([
-  defineWebPage({
-    '@type': 'CollectionPage',
-    'headline': title,
-    description,
-  }),
-])
+useContentPageSchema(
+  { title, path: contributorsPrefix },
+  {
+    type: 'CollectionPage',
+    headline: title,
+    description: description || subtitle || undefined,
+    breadcrumbs: [{ title: 'Home', to: '/' }],
+  },
+)
 </script>
 
 <template>

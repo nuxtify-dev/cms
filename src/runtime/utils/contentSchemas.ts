@@ -11,6 +11,16 @@ export const seoSchema = z.object({
   schemaOrg: defineSchemaOrgSchema(),
 })
 
+export const articleSchemaTypeEnum = z.enum([
+  'Article',
+  'BlogPosting',
+  'NewsArticle',
+  'TechArticle',
+  'SocialMediaPosting',
+])
+
+export type ArticleSchemaType = z.infer<typeof articleSchemaTypeEnum>
+
 export const imageSchema = z.object({
   src: z.string(),
   alt: z.string(),
@@ -55,6 +65,7 @@ export const articleSchema = z.object({
   draft: z.boolean().default(false),
   topics: z.array(z.string()).default([]).optional(),
   readTime: z.union([z.number(), z.string()]).optional(),
+  schemaType: articleSchemaTypeEnum.optional(),
 }).merge(seoSchema)
 
 export const topicSchema = z.object({
@@ -69,4 +80,5 @@ export const noteSchema = z.object({
   image: imageSchema.optional(),
   draft: z.boolean().default(false),
   tags: z.array(z.string()).default([]).optional(),
+  schemaType: articleSchemaTypeEnum.optional(),
 }).merge(seoSchema)

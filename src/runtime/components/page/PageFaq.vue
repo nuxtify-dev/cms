@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { VExpansionPanels } from 'vuetify/components'
+import { buildFaqSchemaNodes } from '../../utils/seo'
 import {
-  useSchemaOrg,
   defineQuestion,
+  defineWebPage,
+  useSchemaOrg,
 } from '#imports'
 
 interface FaqItem {
@@ -15,18 +17,13 @@ const props = defineProps<{
   variant?: VExpansionPanels['$props']['variant']
 }>()
 
-if (props.questions) {
-  useSchemaOrg([
-    {
-      '@type': 'FAQPage',
-      'mainEntity': props.questions.map(item => (
-        defineQuestion({
-          name: item.question,
-          acceptedAnswer: item.answer,
-        })),
-      ),
-    },
-  ])
+const faqNodes = buildFaqSchemaNodes(props.questions, {
+  webPage: node => defineWebPage(node as Parameters<typeof defineWebPage>[0]),
+  question: item => defineQuestion(item),
+})
+
+if (faqNodes.length > 0) {
+  useSchemaOrg(faqNodes)
 }
 </script>
 

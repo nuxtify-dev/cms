@@ -5,7 +5,7 @@ import {
   useAsyncData,
   usePublicCollection,
   useSeoMeta,
-  useSchemaOrg,
+  useContentPageSchema,
   createError,
 } from '#imports'
 
@@ -22,7 +22,7 @@ if (!page.value) {
 //   defineOgImage({ component: page.value.ogImage.component, ...page.value.ogImage.props })
 // }
 useSeoMeta(page.value.seo || {})
-useSchemaOrg(page.value.schemaOrg || [])
+useContentPageSchema(page)
 </script>
 
 <template>

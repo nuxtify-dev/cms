@@ -6,17 +6,14 @@ import {
   useAsyncData,
   usePublicCollection,
   useSeoMeta,
-  useSchemaOrg,
   createError,
   ref,
-  getBreadcrumbsSchema,
-  defineArticle,
-  defineBreadcrumb,
+  titleCase,
   unslugify,
   useReadingTime,
-  useSiteConfig,
   useContributor,
   useNuxtifyConfig,
+  useArticleSchema,
   normalizePrefix,
 } from '#imports'
 
@@ -26,9 +23,7 @@ const slug = route.params.slug as string
 
 const articlesPrefix = normalizePrefix(nuxtifyConfig.content?.articles?.routePrefix, '/articles')
 const topicsPrefix = normalizePrefix(nuxtifyConfig.content?.topics?.routePrefix, '/topics')
-const contributorsPrefix = normalizePrefix(nuxtifyConfig.content?.contributors?.routePrefix, '/contributors')
 const topicsEnabled = nuxtifyConfig.content?.topics?.enabled !== false
-const contributorsEnabled = nuxtifyConfig.content?.contributors?.enabled !== false
 
 const { data: article } = await useAsyncData(`article-${route.path}`, async () => {
   const direct = await usePublicCollection('articles').path(route.path).first()
@@ -65,30 +60,15 @@ if (article.value.topics?.length && article.value.topics[0]) {
 //   defineOgImage({ component: article.value.ogImage.component, ...article.value.ogImage.props })
 // }
 useSeoMeta(article.value.seo || {})
-useSchemaOrg(article.value.schemaOrg || [
-  defineArticle({
-    '@type': 'BlogPosting',
-    'dateModified': article.value.updatedAt ?? '',
-    'datePublished': article.value.publishedAt,
-    'headline': article.value.seo?.title ?? '',
-    'image': article.value.image?.src ?? '',
-    'author':
-    author.value
-      ? [
-          {
-            '@type': 'Person',
-            'name': author.value.name ?? '',
-            ...(contributorsEnabled ? { url: `${useSiteConfig().url}${contributorsPrefix}/${article.value.author}` } : {}),
-            'jobTitle': author.value.jobTitle ?? '',
-            'honorificSuffix': author.value.honorificSuffix ?? '',
-          },
-        ]
-      : [],
-  }),
-  defineBreadcrumb({
-    itemListElement: getBreadcrumbsSchema(breadcrumbs.value),
-  }),
-])
+useArticleSchema({
+  doc: article,
+  author,
+  authorSlug: article.value.author,
+  schemaType: nuxtifyConfig.content?.articles?.schemaType,
+  breadcrumbs,
+  section: article.value.topics?.[0] ? titleCase(unslugify(article.value.topics[0])) : undefined,
+  keywords: article.value.topics?.map(topic => titleCase(unslugify(topic))),
+})
 </script>
 
 <template>

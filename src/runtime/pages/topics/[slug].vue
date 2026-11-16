@@ -5,9 +5,10 @@ import {
   useAsyncData,
   usePublicCollection,
   useSeoMeta,
-  useSchemaOrg,
+  useContentPageSchema,
   createError,
   useNuxtifyConfig,
+  normalizePrefix,
 } from '#imports'
 
 const nuxtifyConfig = useNuxtifyConfig()
@@ -41,7 +42,15 @@ const { data: articles } = await useAsyncData(`articles-in-${slug}`, async () =>
 //   defineOgImage({ component: topic.value.ogImage.component, ...topic.value.ogImage.props })
 // }
 useSeoMeta(topic.value.seo || {})
-useSchemaOrg(topic.value.schemaOrg || [])
+const topicsPrefix = normalizePrefix(nuxtifyConfig.content?.topics?.routePrefix, '/topics')
+const topicsTitle = nuxtifyConfig.content?.topics?.title ?? 'Topics'
+useContentPageSchema(topic, {
+  type: 'CollectionPage',
+  breadcrumbs: [
+    { title: 'Home', to: '/' },
+    { title: topicsTitle, to: topicsPrefix },
+  ],
+})
 </script>
 
 <template>

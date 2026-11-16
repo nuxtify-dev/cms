@@ -3,14 +3,15 @@
 import {
   usePublicCollection,
   useSeoMeta,
-  useSchemaOrg,
+  useContentPageSchema,
   useNuxtifyConfig,
+  normalizePrefix,
   titleCase,
-  defineWebPage,
   useAsyncData,
 } from '#imports'
 
 const nuxtifyConfig = useNuxtifyConfig()
+const notesPrefix = normalizePrefix(nuxtifyConfig.content?.notes?.routePrefix, '/notes')
 const { data: notes } = await useAsyncData('notes', () => {
   return usePublicCollection('notes')
     .order('publishedAt', 'DESC')
@@ -26,13 +27,15 @@ useSeoMeta({
   description,
 })
 
-useSchemaOrg([
-  defineWebPage({
-    '@type': 'CollectionPage',
-    'headline': title,
-    description,
-  }),
-])
+useContentPageSchema(
+  { title, path: notesPrefix },
+  {
+    type: 'CollectionPage',
+    headline: title,
+    description: description || subtitle || undefined,
+    breadcrumbs: [{ title: 'Home', to: '/' }],
+  },
+)
 </script>
 
 <template>

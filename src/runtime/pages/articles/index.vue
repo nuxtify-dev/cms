@@ -3,14 +3,15 @@
 import {
   usePublicCollection,
   useSeoMeta,
-  useSchemaOrg,
+  useContentPageSchema,
   useNuxtifyConfig,
+  normalizePrefix,
   titleCase,
-  defineWebPage,
   useAsyncData,
 } from '#imports'
 
 const nuxtifyConfig = useNuxtifyConfig()
+const articlesPrefix = normalizePrefix(nuxtifyConfig.content?.articles?.routePrefix, '/articles')
 const { data: articles } = await useAsyncData('articles', () => {
   return usePublicCollection('articles')
     .order('publishedAt', 'DESC')
@@ -24,13 +25,15 @@ useSeoMeta({
   title: subtitle ? `${title} - ${titleCase(subtitle).replace(/\.$/, '')}` : title,
   description,
 })
-useSchemaOrg([
-  defineWebPage({
-    '@type': 'CollectionPage',
-    'headline': title,
-    description,
-  }),
-])
+useContentPageSchema(
+  { title, path: articlesPrefix },
+  {
+    type: 'CollectionPage',
+    headline: title,
+    description: description || subtitle || undefined,
+    breadcrumbs: [{ title: 'Home', to: '/' }],
+  },
+)
 </script>
 
 <template>
