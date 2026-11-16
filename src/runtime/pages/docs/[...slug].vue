@@ -102,8 +102,8 @@ if (!pageState.value?.doc) {
   }
   else {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Documentation page not found',
+      status: 404,
+      statusText: 'Documentation page not found',
       fatal: true,
     })
   }
@@ -117,8 +117,8 @@ watch(pageState, async (nextState) => {
   }
   else {
     showError(createError({
-      statusCode: 404,
-      statusMessage: 'Documentation page not found',
+      status: 404,
+      statusText: 'Documentation page not found',
     }))
   }
 })

@@ -34,8 +34,8 @@ const { data: note } = await useAsyncData(`note-${route.path}`, async () => {
 
 if (!note.value) {
   throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
+    status: 404,
+    statusText: 'Page Not Found',
     fatal: import.meta.client,
   })
 }

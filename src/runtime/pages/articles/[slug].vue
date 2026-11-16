@@ -39,7 +39,7 @@ const { data: article } = await useAsyncData(`article-${route.path}`, async () =
     .first()
 })
 if (!article.value) {
-  throw createError({ statusCode: 404, statusText: 'Article not found', fatal: import.meta.client })
+  throw createError({ status: 404, statusText: 'Article not found', fatal: import.meta.client })
 }
 
 const { data: author } = await useContributor(article.value.author)
