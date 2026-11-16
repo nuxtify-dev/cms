@@ -54,7 +54,7 @@
     "@nuxt/content": "^3.16.2",
     "@nuxt/kit": "^4.4.6",
     "@nuxtify/pages": "^0.8.0",
-    "@nuxtjs/seo": "^5.1.3",
+    "@nuxtjs/seo": "^5.3.16",
     "better-sqlite3": "^13.0.3",
     "defu": "^6.1.7"
   },
