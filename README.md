@@ -128,7 +128,9 @@ Develop and [deploy](https://nuxt.com/docs/getting-started/deployment) your Nuxt
 
 ### Module configuration
 
-To see the full config, check out the [types](https://github.com/nuxtify-dev/cms/blob/main/src/types/module.ts).
+Configure module and collection options under `nuxtifyCms` in `nuxt.config.ts`—especially build-time options like `content.<collection>.enabled` and `content.<collection>.routePrefix` (putting those in `app.config.ts` will not disable routes or exclude them from the sitemap). Runtime brand, navigation, and UI settings can be configured under `nuxtify` in `app.config.ts`.
+
+To see the full config, check out the [types](https://github.com/nuxtify-dev/cms/blob/main/src/runtime/types/module.ts).
 
 ### Overriding the defaults
 

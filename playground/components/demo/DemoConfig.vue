@@ -19,7 +19,7 @@ const nuxtifyConfig = useNuxtifyConfig()
           </h2>
         </div>
         <p class="text-body-1 text-medium-emphasis mb-4">
-          The following config properties have been synced from <code>app.config.ts</code> to the <code>useNuxtifyConfig</code> composable, allowing layout templates and components to remain decoupled and highly flexible.
+          The following config properties are merged from <code>nuxt.config.ts</code> (<code>nuxtifyCms</code>) and <code>app.config.ts</code> (<code>nuxtify</code>) into the <code>useNuxtifyConfig</code> composable, allowing layout templates and components to remain decoupled and highly flexible.
         </p>
 
         <v-card
